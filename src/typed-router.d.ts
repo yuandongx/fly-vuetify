@@ -19,6 +19,14 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
+    '/favorate/fund': RouteRecordInfo<'/favorate/fund', '/favorate/fund', Record<never, never>, Record<never, never>>,
+    '/favorate/stock': RouteRecordInfo<'/favorate/stock', '/favorate/stock', Record<never, never>, Record<never, never>>,
+    '/fund/foreign': RouteRecordInfo<'/fund/foreign', '/fund/foreign', Record<never, never>, Record<never, never>>,
+    '/fund/internal': RouteRecordInfo<'/fund/internal', '/fund/internal', Record<never, never>, Record<never, never>>,
+    '/history': RouteRecordInfo<'/history', '/history', Record<never, never>, Record<never, never>>,
+    '/note': RouteRecordInfo<'/note', '/note', Record<never, never>, Record<never, never>>,
+    '/stock': RouteRecordInfo<'/stock', '/stock', Record<never, never>, Record<never, never>>,
+    '/task': RouteRecordInfo<'/task', '/task', Record<never, never>, Record<never, never>>,
   }
 
   /**
@@ -34,6 +42,38 @@ declare module 'vue-router/auto-routes' {
   export interface _RouteFileInfoMap {
     'src/pages/index.vue': {
       routes: '/'
+      views: never
+    }
+    'src/pages/favorate/fund.vue': {
+      routes: '/favorate/fund'
+      views: never
+    }
+    'src/pages/favorate/stock.vue': {
+      routes: '/favorate/stock'
+      views: never
+    }
+    'src/pages/fund/foreign.vue': {
+      routes: '/fund/foreign'
+      views: never
+    }
+    'src/pages/fund/internal.vue': {
+      routes: '/fund/internal'
+      views: never
+    }
+    'src/pages/history.vue': {
+      routes: '/history'
+      views: never
+    }
+    'src/pages/note.vue': {
+      routes: '/note'
+      views: never
+    }
+    'src/pages/stock.vue': {
+      routes: '/stock'
+      views: never
+    }
+    'src/pages/task.vue': {
+      routes: '/task'
       views: never
     }
   }
