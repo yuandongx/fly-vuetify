@@ -1,5 +1,3 @@
 <template>
-  <div>
-    <h1>Stock</h1>
-  </div>
+  <app-table />
 </template>
