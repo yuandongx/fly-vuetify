@@ -1,0 +1,5 @@
+#!/bin/bash
+
+current=$(dirname $1)
+
+echo $current
