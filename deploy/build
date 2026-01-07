@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd mui-react-web
-git pull origin develop
+work_space=$(dirname $1)
 
-docker run -it  -v $(pwd):/app node:latest  bash -c "cd /app && npm install && npm run build;ls -l /app/dist"
+# docker run -it  -v $(pwd):/app node:latest  bash -c "cd /app && npm install && npm run build;ls -l /app/dist"
