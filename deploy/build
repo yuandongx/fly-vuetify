@@ -1,5 +1,6 @@
 #!/bin/bash
 
-current=$(dirname $1)
+cd mui-react-web
+git pull origin develop
 
-echo $current
+docker run -it  -v $(pwd):/app node:latest  bash -c "cd /app && npm install && npm run build;ls -l /app/dist"
