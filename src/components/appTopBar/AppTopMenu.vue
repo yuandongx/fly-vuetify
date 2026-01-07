@@ -3,5 +3,5 @@
 </template>
 
 <script lang="ts" setup>
-import { menuItems } from './menuItems'
+import { menuItems } from '@/vars/menuItems'
 </script>

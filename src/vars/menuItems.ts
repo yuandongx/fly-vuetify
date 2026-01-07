@@ -22,14 +22,14 @@ export const menuItems: MenuItem[] = [
     key: 'fund',
     children: [
       {
-        label: '国际基金',
-        to: '/fund/foreign',
-        key: 'fund-foreign',
+        label: '全部基金',
+        to: '/fund/all',
+        key: 'fund-all',
       },
       {
-        label: '国内基金',
-        to: '/fund/internal',
-        key: 'fund-internal',
+        label: '基金排行',
+        to: '/fund/rank',
+        key: 'fund-rank',
       },
     ],
   },

@@ -12,15 +12,13 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
-    AppTable: typeof import('./components/table/AppTable.vue')['default']
     AppTopBar: typeof import('./components/appTopBar/AppTopBar.vue')['default']
     AppTopMenu: typeof import('./components/appTopBar/AppTopMenu.vue')['default']
     AppTopMenuItem: typeof import('./components/appTopBar/AppTopMenuItem.vue')['default']
+    FundTable: typeof import('./components/fund/FundTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TableBody: typeof import('./components/table/TableBody.vue')['default']
-    TableContent: typeof import('./components/table/TableBody.vue')['default']
-    TableHead: typeof import('./components/table/TableHead.vue')['default']
-    TableRow: typeof import('./components/table/TableRow.vue')['default']
+    StockTable: typeof import('./components/stock/StockTable.vue')['default']
+    StockTableHeader: typeof import('./components/stock/StockTableHeader.vue')['default']
   }
 }
