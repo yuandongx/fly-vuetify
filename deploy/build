@@ -1,5 +1,31 @@
 #!/bin/bash
+# 定义颜色变量，用于增强日志输出
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+work_space=$(dirname $0)
 
-work_space=$(dirname $1)
+if [ "$work_space" == "." ] ;
+then
+    cd ..
+else
+    cd $work_space
+    cd ..
+    echo "Current work_space is ${GREEN} $(pwd) ${NC}."
+fi
 
+echo ${GREEN} Start build docker image ... ${NC}
+
+v1=$(cat deploy/version | awk -F . '{print $1}')
+v2=$(cat deploy/version | awk -F . '{print $2}')
+v3=$(cat deploy/version | awk -F . '{print $3}')
+v3=$((v3+1))
+new_version="${v1}.${v2}.${v3}"
+
+image="app_web:${new_version}"
+
+docker build -f deploy/Dockerfile -t $image .
+
+echo $new_version >> deploy/version
 # docker run -it  -v $(pwd):/app node:latest  bash -c "cd /app && npm install && npm run build;ls -l /app/dist"
