@@ -18,23 +18,22 @@ import { fundAllHeader } from '@/vars/fund'
 const items = ref<TableRow[]>([])
 const serverItemsLength = ref(0)
 const loading = ref(false)
-let page = 1
-let itemsPerPage = 10
 type Order = {key: string, order: string}
-let sortBy: Order[] = []
 const headers = [...fundAllHeader, {id: 17, key: 'operation', title: '操作'}]
-type options = {page: number, itemsPerPage: number, sortBy: string, groupBy: string, search: string}
+type options = {page: number, itemsPerPage: number, sortBy: Order[], groupBy: string, search: string}
+
 const handleOptionsChange = ({page, itemsPerPage, sortBy, groupBy, search}: options) => {
     console.log(page, itemsPerPage, sortBy, groupBy, search)
+    loadIems({page, itemsPerPage, sortBy, groupBy, search})
 }
-const loadIems = () => {
+const loadIems = ( options?: options) => {
     console.log('loadIems')
     loading.value = true
     get('/api/fund/all', {
-        page: String(page),
-        page_size: String(itemsPerPage),
-        order_by: sortBy !== undefined && sortBy?.[0]?.key !== undefined ? sortBy?.[0]?.key : "",
-        order: sortBy !== undefined && sortBy?.[0]?.order !== undefined ? sortBy?.[0]?.order : ""
+        page: String(options?.page || 1),
+        page_size: String(options?.itemsPerPage || 10),
+        order_by: options?.sortBy !== undefined && options.sortBy?.[0]?.key !== undefined ? options.sortBy?.[0]?.key : "",
+        sort: options?.sortBy !== undefined && options.sortBy?.[0]?.order !== undefined ? options.sortBy?.[0]?.order : ""
     }).then((res) => {
         console.log(res)
         loading.value = false
