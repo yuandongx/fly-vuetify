@@ -1,3 +1,3 @@
 <template>
-    <div>all Fund</div>
+    <fund-table></fund-table>
 </template>

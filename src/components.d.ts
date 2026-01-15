@@ -15,6 +15,7 @@ declare module 'vue' {
     AppTopBar: typeof import('./components/appTopBar/AppTopBar.vue')['default']
     AppTopMenu: typeof import('./components/appTopBar/AppTopMenu.vue')['default']
     AppTopMenuItem: typeof import('./components/appTopBar/AppTopMenuItem.vue')['default']
+    FundRow: typeof import('./components/fund/FundRow.vue')['default']
     FundTable: typeof import('./components/fund/FundTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

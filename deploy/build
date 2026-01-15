@@ -12,10 +12,10 @@ then
 else
     cd $work_space
     cd ..
-    echo "Current work_space is ${GREEN} $(pwd) ${NC}."
+    echo -e "Current work_space is ${GREEN} $(pwd) ${NC}."
 fi
 
-echo ${GREEN} Start build docker image ... ${NC}
+echo -e ${GREEN} Start build docker image ... ${NC}
 
 v1=$(cat deploy/version | awk -F . '{print $1}')
 v2=$(cat deploy/version | awk -F . '{print $2}')
