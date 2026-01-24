@@ -19,8 +19,8 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
-    '/favorate/fund': RouteRecordInfo<'/favorate/fund', '/favorate/fund', Record<never, never>, Record<never, never>>,
-    '/favorate/stock': RouteRecordInfo<'/favorate/stock', '/favorate/stock', Record<never, never>, Record<never, never>>,
+    '/follow/fund': RouteRecordInfo<'/follow/fund', '/follow/fund', Record<never, never>, Record<never, never>>,
+    '/follow/stock': RouteRecordInfo<'/follow/stock', '/follow/stock', Record<never, never>, Record<never, never>>,
     '/fund/all': RouteRecordInfo<'/fund/all', '/fund/all', Record<never, never>, Record<never, never>>,
     '/fund/foreign': RouteRecordInfo<'/fund/foreign', '/fund/foreign', Record<never, never>, Record<never, never>>,
     '/fund/internal': RouteRecordInfo<'/fund/internal', '/fund/internal', Record<never, never>, Record<never, never>>,
@@ -46,12 +46,12 @@ declare module 'vue-router/auto-routes' {
       routes: '/'
       views: never
     }
-    'src/pages/favorate/fund.vue': {
-      routes: '/favorate/fund'
+    'src/pages/follow/fund.vue': {
+      routes: '/follow/fund'
       views: never
     }
-    'src/pages/favorate/stock.vue': {
-      routes: '/favorate/stock'
+    'src/pages/follow/stock.vue': {
+      routes: '/follow/stock'
       views: never
     }
     'src/pages/fund/all.vue': {

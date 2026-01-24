@@ -12,7 +12,7 @@
         <FundRow
         :favorite="()=>favorite(item)"
         :item="item"
-        :headers="headers"
+        :headers="props.dataHeaders"
         :onHandleMore="()=>handleMore(item)">
         <template #snack-bar>
             <v-snackbar v-model="showSnackBar" timeout="3000" location="right center">

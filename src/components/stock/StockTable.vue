@@ -1,28 +1,27 @@
 <template>
 
-    <stock-table-header :search="handleSearch" :select-areas="selectAreas"/>
+    <stock-table-header :search="handleSearch" :select-areas="selectAreas" />
     <v-divider color="green-lighten-4"> </v-divider>
     <v-data-table-server v-model:items-per-page="itemsPerPage" :headers="tableHeaders" :items="rows"
         :items-length="totalItems" :loading="loading" :search="search" item-value="name" @update:options="loadItems">
-    <template #item="{ item }">
-        <stock-row :item="item" :headers="stockColumns" :favorite="() => handleFavorite(item)" >
-            <template #snack-bar>
-                <v-snackbar v-model="showSnackbar" timeout="3000" location="right center">
-                    {{ tips_favorite }}
-                    <template v-slot:actions>
-                        <v-btn text @click="showSnackbar = false">确定</v-btn>
-                    </template>
-                </v-snackbar>
-            </template>
-        </stock-row>
-    </template>
+        <template #item="{ item }">
+            <stock-row :item="item" :headers="stockColumns" :favorite="() => handleFavorite(item)">
+                <template #snack-bar>
+                    <v-snackbar v-model="showSnackbar" timeout="3000" location="right center">
+                        {{ tips_favorite }}
+                        <template v-slot:actions>
+                            <v-btn text @click="showSnackbar = false">确定</v-btn>
+                        </template>
+                    </v-snackbar>
+                </template>
+            </stock-row>
+        </template>
     </v-data-table-server>
 </template>
 <script setup lang="ts">
 
-import type { StockResponse, StockRow } from '@/types/stock';
+import type { StockRow } from '@/types/stock';
 import { stockColumns } from '@/vars/stock';
-import { getStockList } from '@/http/stock';
 import { get } from '@/http/common';
 const loading = ref(true)
 const showSnackbar = ref(false);
@@ -40,7 +39,12 @@ let params = {
     search: '',
     area: 'sh,sz,bj'
 };
-
+const props = defineProps({
+    dataSourcePath: {
+        type: String,
+        default: '/api/stock/list'
+    }
+})
 const handleSearch = (val: string) => {
     loadItems({ ...params, search: val });
 }
@@ -52,16 +56,18 @@ const loadItems = async ({ page, itemsPerPage, sortBy, search }: any) => {
     params = {
         ...params,
         page: String(page),
-        page_size: String(itemsPerPage? itemsPerPage : 10),
+        page_size: String(itemsPerPage ? itemsPerPage : 10),
         order_by: sortBy !== undefined && sortBy?.[0]?.key !== undefined ? sortBy?.[0]?.key : "",
         order: sortBy !== undefined && sortBy?.[0]?.order !== undefined ? sortBy?.[0]?.order : "",
         search: search || ''
     };
     loading.value = true;
-    const res: StockResponse = await getStockList(params);
-    rows.value = res.data;
-    totalItems.value = res.total;
-    loading.value = false;
+    get(props.dataSourcePath, params).then(res => {
+        rows.value = res.data;
+        totalItems.value = res.total;
+        loading.value = false;
+
+    });
 }
 
 const handleFavorite = (item: StockRow) => {
@@ -69,7 +75,7 @@ const handleFavorite = (item: StockRow) => {
     get(`/api/stock/follow/${item.code}/${flag}`).then(() => {
         loadItems(params);
         showSnackbar.value = true;
-        tips_favorite.value =  flag==0? '已取消关注' : '已关注该股票';
+        tips_favorite.value = flag == 0 ? '已取消关注' : '已关注该股票';
     });
 }
 

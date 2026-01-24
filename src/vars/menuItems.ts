@@ -35,18 +35,18 @@ export const menuItems: MenuItem[] = [
   },
   {
     label: '关注',
-    to: '/favorate',
-    key: 'favorate',
+    to: '/follow',
+    key: 'follow',
     children: [
       {
         label: '股票',
-        to: '/favorate/stock',
-        key: 'favorate-stock',
+        to: '/follow/stock',
+        key: 'follow-stock',
       },
       {
         label: '基金',
-        to: '/favorate/fund',
-        key: 'favorate-fund',
+        to: '/follow/fund',
+        key: 'follow-fund',
       },
     ],
   },

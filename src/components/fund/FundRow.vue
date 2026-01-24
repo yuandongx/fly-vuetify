@@ -38,6 +38,8 @@ const rowItem = computed(() => {
         const value = props.item[element.key]
         if (value != undefined) {
             rtn.push({key: element.key, value: value})
+        } else {
+            rtn.push({key: element.key, value: ''})
         }
     }); 
     return rtn

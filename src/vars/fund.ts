@@ -1,7 +1,7 @@
  import { type TableColumn } from '@/types/table';
 
  export const fundAllHeader: TableColumn[] =  [
-    {id: 0, key: 'id', title: 'ID'},
+    // {id: 0, key: 'id', title: 'ID'},
     {id: 1, key: 'code', title: '基金代码'},
    //  {id: 2, key: 'pin_yin', title: '拼音缩写'},
     {id: 3, key: 'name', title: '基金简称'},
