@@ -21,13 +21,14 @@
     
  ]
 
+
  export const fundRankHeader: TableColumn[] =  [
-    {id: 0, key: 'id', title: 'ID'},
+   //  {id: 0, key: 'id', title: 'ID'},
     {id: 1, key: 'code', title: '基金代码'},
     {id: 2, key: 'name', title: '基金简称'},
     {id: 3, key: 'fund_type', title: '基金类型'},
    //  {id: 4, key: 'update_time', title: '更新时间'},
-    {id: 5, key: 'established_time', title: '成立时间'},
+    // {id: 5, key: 'established_time', title: '成立时间'},
    //  {id: 6, key: 'latest_scale', title: '最新规模'},
    //  {id: 7, key: 'fund_company', title: '基金公司'},
    //  {id: 8, key: 'follow', title: '是否关注'},

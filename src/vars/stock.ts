@@ -1,6 +1,6 @@
 import type { StockColumn } from '@/types/stock';
 
-export const STOCK_COLUMNS: Array<StockColumn> = [
+export const stockColumns: Array<StockColumn> = [
     {
         id: 1,
         title: '股票代码',
@@ -57,7 +57,7 @@ export const STOCK_COLUMNS: Array<StockColumn> = [
         key: 'update_time',
     }
 ]
-export const FOLLOW_COLUMNS: Array<StockColumn> = [...STOCK_COLUMNS.slice(0, 9)
+export const FOLLOW_COLUMNS: Array<StockColumn> = [...stockColumns.slice(0, 9)
     , {
     id: 10,
     title: '关注时价格',

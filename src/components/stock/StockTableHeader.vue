@@ -8,6 +8,7 @@
                 density="compact"
                 label="Search ..."
                 variant="solo"
+                v-model="search"
                 hide-details
                 single-line
                 @click:append-inner="onClick"
@@ -50,12 +51,25 @@
 import { ref } from 'vue'
 const loading = ref(false)
 const selectAreas = ref(['sh', 'sz', 'bj'])
-
+const search = ref('')
+const props = defineProps({
+    search: {
+        type: Function,
+        default: ()=>''
+    },
+    selectAreas: {
+        type: Function,
+        default: () => ['sh', 'sz', 'bj']
+    }
+})
 const onClick = () => {
     loading.value = true;
-    console.log('------->', selectAreas.value);
+    props.search(search.value);
+    loading.value = false;
+    console.log('click search icon');
 }
 const updateSelectAreas = () => {
-    console.log('------->', selectAreas.value);
+    props.selectAreas(selectAreas.value.join(','));
+    console.log("================",  selectAreas.value);
 }
 </script>

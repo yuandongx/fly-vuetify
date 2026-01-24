@@ -10,6 +10,7 @@
                 variant="solo"
                 hide-details
                 single-line
+                v-model="search"
                 @click:append-inner="onClick"
             ></v-text-field>
             </v-col>
@@ -20,8 +21,13 @@
 import { ref } from 'vue'
 const loading = ref(false)
 const search = ref('')
+const props = defineProps({
+    search: {
+        type: Function,
+        default: ()=>''
+    }
+})
 const onClick = () => {
-    loading.value = true;
-    console.log('------->', search.value);
+    props.search(search.value);
 }
 </script>

@@ -5,14 +5,14 @@
       transition="dialog-bottom-transition"
       fullscreen
     >
-      <template v-slot:activator="{ props: activatorProps }">
+      <!-- <template v-slot:activator="{ props: activatorProps }">
         <v-btn
           prepend-icon="mdi-cog"
           size="small"
           text="Settings"
           v-bind="activatorProps"
         ></v-btn>
-      </template>
+      </template> -->
 
       <v-card>
         <v-toolbar>

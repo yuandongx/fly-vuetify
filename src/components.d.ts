@@ -21,6 +21,7 @@ declare module 'vue' {
     FundTable: typeof import('./components/fund/FundTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StockRow: typeof import('./components/stock/StockRow.vue')['default']
     StockTable: typeof import('./components/stock/StockTable.vue')['default']
     StockTableHeader: typeof import('./components/stock/StockTableHeader.vue')['default']
   }
