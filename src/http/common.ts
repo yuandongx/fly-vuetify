@@ -1,5 +1,6 @@
+import type { Params } from "@/types/common";
 
-export async function get(path: string, params?: Record<string, string>) {
+export async function get(path: string, params?: Params) {
     let url = path
     if (params) {
         url += '?' + new URLSearchParams(params).toString();

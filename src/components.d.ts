@@ -24,5 +24,9 @@ declare module 'vue' {
     StockRow: typeof import('./components/stock/StockRow.vue')['default']
     StockTable: typeof import('./components/stock/StockTable.vue')['default']
     StockTableHeader: typeof import('./components/stock/StockTableHeader.vue')['default']
+    TaskTable: typeof import('./components/task/TaskTable.vue')['default']
+    TaskTableBar: typeof import('./components/task/TaskTableBar.vue')['default']
+    TaskTableHistoryRow: typeof import('./components/task/TaskTableHistoryRow.vue')['default']
+    TaskTableRow: typeof import('./components/task/TaskTableRow.vue')['default']
   }
 }
