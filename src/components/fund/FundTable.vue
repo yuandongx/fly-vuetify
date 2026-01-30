@@ -25,7 +25,11 @@
         </FundRow>
     </template>
 </v-data-table-server>
-<FundDetail v-model="showDialog" />
+<MoreInfo v-model="showDialog" >
+    <template #monitor-info>
+        <TaskForm />
+    </template> 
+</MoreInfo>
 </template>
 <script setup lang="ts">
 import { get } from '@/http/common'
