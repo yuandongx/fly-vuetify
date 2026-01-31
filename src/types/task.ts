@@ -12,8 +12,9 @@ export type TaskHistory = {
 
 export interface TaskArgItem {
     flag: "up"|"down"|null,
-    value: number,
-    interval: string,
+    label: string,
+    value: number|null,
+    interval: number|null,
     key: number,
 }
 
