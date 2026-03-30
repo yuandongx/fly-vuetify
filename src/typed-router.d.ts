@@ -28,7 +28,8 @@ declare module 'vue-router/auto-routes' {
     '/history': RouteRecordInfo<'/history', '/history', Record<never, never>, Record<never, never>>,
     '/note': RouteRecordInfo<'/note', '/note', Record<never, never>, Record<never, never>>,
     '/stock': RouteRecordInfo<'/stock', '/stock', Record<never, never>, Record<never, never>>,
-    '/task': RouteRecordInfo<'/task', '/task', Record<never, never>, Record<never, never>>,
+    '/task/monitor': RouteRecordInfo<'/task/monitor', '/task/monitor', Record<never, never>, Record<never, never>>,
+    '/task/running': RouteRecordInfo<'/task/running', '/task/running', Record<never, never>, Record<never, never>>,
   }
 
   /**
@@ -82,8 +83,12 @@ declare module 'vue-router/auto-routes' {
       routes: '/stock'
       views: never
     }
-    'src/pages/task.vue': {
-      routes: '/task'
+    'src/pages/task/monitor.vue': {
+      routes: '/task/monitor'
+      views: never
+    }
+    'src/pages/task/running.vue': {
+      routes: '/task/running'
       views: never
     }
   }

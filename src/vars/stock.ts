@@ -14,7 +14,7 @@ export const stockColumns: Array<StockColumn> = [
     {
         id: 3,
         title: "最新价",
-        key: "latest_price"
+        key: "open"
     },
     {
         id: 4,
@@ -28,31 +28,36 @@ export const stockColumns: Array<StockColumn> = [
     },
     {
         id: 6,
+        title: '最新价',
+        key: 'trade',
+    },
+    {
+        id: 7,
         title: '今日变化',
-        key: 'change',
+        key: 'pricechange',
         arrow: true,
         color: true,
     },
     {
-        id: 7,
+        id: 8,
         title: '今日变化率',
-        key: 'change_percent',
+        key: 'changepercent',
         isPercent: true,
         color: true,
         arrow: true,
     },
     {
-        id: 8,
+        id: 9,
         title: '今日开盘价',
         key: 'open',
     },
     {
-        id: 9,
-        title: '今日收盘价',
-        key: 'close',
+        id: 10,
+        title: '昨收',
+        key: 'settlement',
     },
     {
-        id: 10,
+        id: 11,
         title: '更新时间',
         key: 'update_time',
     }

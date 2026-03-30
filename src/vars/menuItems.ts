@@ -54,6 +54,18 @@ export const menuItems: MenuItem[] = [
     label: '任务',
     to: '/task',
     key: 'task',
+    children: [
+      {
+        label: '任务运行',
+        to: '/task/running',
+        key: 'task-running',
+      },
+      {
+        label: '市场监控',
+        to: '/task/monitor',
+        key: 'task-market-monitor',
+      },
+    ],
   },
   {
     label: '笔记',

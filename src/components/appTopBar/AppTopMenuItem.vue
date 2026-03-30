@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type MenuItem } from './menuItems'
+import { type MenuItem } from '@/vars/menuItems'
 const props = defineProps({
   menuItem: {
     type: Object as () => MenuItem,
