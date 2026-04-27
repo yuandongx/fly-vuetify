@@ -1,104 +1,66 @@
 <template>
   <v-sheet border rounded>
-    <v-data-table-server :headers="headers" :hide-default-footer="dataItems.length < 11" :items="dataItems">
+    <v-data-table-server :headers="headers" 
+    :items-length="dataItems.length"
+    :hide-default-footer="dataItems.length < 11" :items="dataItems">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>
             <v-icon color="medium-emphasis" icon="mdi-book-multiple" size="x-small" start></v-icon>
             监控任务
           </v-toolbar-title>
-
           <v-btn class="me-2" prepend-icon="mdi-plus" rounded="lg" text="增加监控任务" border @click="add"></v-btn>
         </v-toolbar>
       </template>
 
-      <template v-slot:item.title="{ value }">
-        <v-chip :text="value" border="thin opacity-25" prepend-icon="mdi-book" label>
-          <template v-slot:prepend>
-            <v-icon color="medium-emphasis"></v-icon>
-          </template>
-        </v-chip>
+      <template v-slot:item.name="{ item }">
+        <NameCell :value="item.name"></NameCell>
       </template>
 
       <template v-slot:item.actions="{ item }">
-        <div class="d-flex ga-2 justify-end">
-          <v-icon color="medium-emphasis" icon="mdi-pencil" size="small" @click="edit(item.id)"></v-icon>
-
-          <v-icon color="medium-emphasis" icon="mdi-delete" size="small" @click="remove(item.id)"></v-icon>
-        </div>
+        <TableActions :id="item.id" @edit="edit" @delete="remove"></TableActions>
       </template>
 
-      <template v-slot:no-data>
-        <v-btn prepend-icon="mdi-backup-restore" rounded="lg" text="Reset data" variant="text" border
-          @click="reset"></v-btn>
-      </template>
+      <!-- <template v-slot:no-data>
+        <v-btn prepend-icon="mdi-backup-restore" rounded="lg" text="Reset data" variant="text" border @click="reset"></v-btn>
+      </template> -->  
+        git config --global user.email "yuandongx@126.com"
+  git config --global user.name "yuandongx"
     </v-data-table-server>
   </v-sheet>
 
-  <v-dialog v-model="dialog" max-width="500">
-    <v-card :subtitle="`${isEditing ? '更新' : '增加'}监控任务`" :title="`${isEditing ? '更新' : '增加'}监控任务`">
-      <template v-slot:text>
-        <v-row>
-          <v-col cols="12">
-            <v-autocomplete 
-              v-model="formModel.title" 
-              auto-select-first
-              :items="seleectItems"
-               label="选择股票/基金"></v-autocomplete>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-text-field v-model="formModel.author" label="Author"></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-select v-model="formModel.genre" :items="['Fiction', 'Dystopian', 'Non-Fiction', 'Sci-Fi']"
-              label="Genre"></v-select>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-number-input v-model="formModel.year" :max="currentYear" :min="1" label="Year"></v-number-input>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-number-input v-model="formModel.pages" :min="1" label="Pages"></v-number-input>
-          </v-col>
-        </v-row>
-      </template>
-
-      <v-divider></v-divider>
-
-      <v-card-actions class="bg-surface-light">
-        <v-btn text="取消" variant="plain" @click="dialog = false"></v-btn>
-
-        <v-spacer></v-spacer>
-
-        <v-btn text="保存" @click="save"></v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <TaskDialog 
+    v-model="dialog"
+    :is-editing="isEditing"
+    :form-data="formModel"
+    :stock-items="selectItems"
+    @save="save"
+    @add-notice="addNoticeConfig"
+    @remove-notice="removeNoticeConfig"></TaskDialog>
 </template>
+
 <script setup>
-import { onMounted, ref, shallowRef, toRef } from 'vue'
+import { onMounted, ref, shallowRef } from 'vue'
 
 /**
  * 获取当前日期并格式化为 YYYY-MM-DD 格式
- * @returns 格式化后的日期字符串，例如 "2026-03-16"
  */
-const get_data = () => {
+const get_date = () => {
   const now = new Date()
   const year = now.getFullYear()
   const month = String(now.getMonth() + 1).padStart(2, '0')
   const day = String(now.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
-
 }
 
 function createNewRecord() {
   return {
     code: '',
     name: '',
-    price: 0.0,
+    stock: null,
+    noticeConfigs: [
+      { noticeType: 'rise', noticeUnit: 'percent', noticeValue: 5 }
+    ],
     start_date: get_date(),
     start_price: 0.0,
   }
@@ -108,7 +70,7 @@ const selectItems = ref([])
 const dataItems = ref([])
 const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
-const isEditing = toRef(() => !!formModel.value.id)
+const isEditing = ref(false)
 
 const headers = [
   { title: '代码', key: 'code', align: 'start' },
@@ -131,39 +93,42 @@ onMounted(() => {
 
 function add() {
   formModel.value = createNewRecord()
+  isEditing.value = false
   dialog.value = true
 }
 
 function edit(id) {
-  const found = books.value.find(book => book.id === id)
-
+  const found = dataItems.value.find(item => item.id === id)
   formModel.value = {
-    id: found.id,
-    title: found.title,
-    author: found.author,
-    genre: found.genre,
-    year: found.year,
-    pages: found.pages,
+    ...found,
+    stock: { code: found.code, name: found.name },
+    noticeConfigs: found.noticeConfigs?.length 
+      ? [...found.noticeConfigs] 
+      : [...createNewRecord().noticeConfigs],
   }
-
+  isEditing.value = true
   dialog.value = true
 }
 
 function remove(id) {
-  const index = books.value.findIndex(book => book.id === id)
-  books.value.splice(index, 1)
+  const index = dataItems.value.findIndex(item => item.id === id)
+  dataItems.value.splice(index, 1)
 }
 
 function save() {
-  if (isEditing.value) {
-    const index = books.value.findIndex(book => book.id === formModel.value.id)
-    books.value[index] = formModel.value
-  } else {
-    formModel.value.id = books.value.length + 1
-    books.value.push(formModel.value)
+  if (formModel.value.stock) {
+    formModel.value.code = formModel.value.stock.code
+    formModel.value.name = formModel.value.stock.name
   }
 
-  dialog.value = false
+  if (formModel.value.id) {
+    const index = dataItems.value.findIndex(item => item.id === formModel.value.id)
+    dataItems.value[index] = { ...formModel.value }
+  } else {
+    formModel.value.id = dataItems.value.length + 1
+    dataItems.value.push({ ...formModel.value })
+  }
+  console.log("======>", formModel.value)
 }
 
 function reset() {
@@ -171,20 +136,27 @@ function reset() {
   formModel.value = createNewRecord()
 }
 
+function addNoticeConfig() {
+  if (formModel.value.noticeConfigs.length < 3) {
+    formModel.value.noticeConfigs.push({ noticeType: 'rise', noticeUnit: 'percent', noticeValue: 5 })
+  }
+}
+
+function removeNoticeConfig(index) {
+  if (formModel.value.noticeConfigs.length > 1) {
+    formModel.value.noticeConfigs.splice(index, 1)
+  }
+}
+
 const getSelectItme = () => {
   return [
-    "A(1231)",
-    "B(1231)",
-    "C(1231)"
-  ];
-}
-const getData = () => {
-  return [
-    { id: 1, title: 'To Kill a Mockingbird', author: 'Harper Lee', genre: 'Fiction', year: 1960, pages: 281 },
-    { id: 2, title: '1984', author: 'George Orwell', genre: 'Dystopian', year: 1949, pages: 328 },
-    { id: 3, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', genre: 'Fiction', year: 1925, pages: 180 },
-    { id: 4, title: 'Sapiens', author: 'Yuval Noah Harari', genre: 'Non-Fiction', year: 2011, pages: 443 },
-    { id: 5, title: 'Dune', author: 'Frank Herbert', genre: 'Sci-Fi', year: 1965, pages: 412 },
+    { code: '000001', name: '平安银行' },
+    { code: '000002', name: '万科A' },
+    { code: '600000', name: '浦发银行' },
+    { code: '600519', name: '贵州茅台' },
+    { code: '000858', name: '五粮液' },
+    { code: '159001', name: '货币基金A' },
+    { code: '510300', name: '沪深300ETF' },
   ]
 }
 </script>
