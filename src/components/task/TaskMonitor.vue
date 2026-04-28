@@ -24,8 +24,6 @@
       <!-- <template v-slot:no-data>
         <v-btn prepend-icon="mdi-backup-restore" rounded="lg" text="Reset data" variant="text" border @click="reset"></v-btn>
       </template> -->  
-        git config --global user.email "yuandongx@126.com"
-  git config --global user.name "yuandongx"
     </v-data-table-server>
   </v-sheet>
 
