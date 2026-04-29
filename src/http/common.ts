@@ -29,7 +29,8 @@ export async function post(path: string, data?: Record<string, string>) {
         },
         body: JSON.stringify(data),
     })
-    
+    console.log('---->', JSON.stringify(data))
+    console.log('--response-->', response)
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }

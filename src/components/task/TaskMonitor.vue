@@ -1,8 +1,8 @@
 <template>
   <v-sheet border rounded>
     <v-data-table-server :headers="headers" 
-    :items-length="dataItems.length"
-    :hide-default-footer="dataItems.length < 11" :items="dataItems">
+    :items-length="dataItemsLength"
+    :hide-default-footer="dataItemsLength < 11" :items="dataItems">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>
@@ -39,7 +39,7 @@
 
 <script setup>
 import { onMounted, ref, shallowRef } from 'vue'
-
+import {post, get} from '@/http/common'
 /**
  * 获取当前日期并格式化为 YYYY-MM-DD 格式
  */
@@ -66,9 +66,11 @@ function createNewRecord() {
 
 const selectItems = ref([])
 const dataItems = ref([])
+const dataItemsLength = ref(0)
 const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = ref(false)
+let intervalId = undefined
 
 const headers = [
   { title: '代码', key: 'code', align: 'start' },
@@ -87,8 +89,16 @@ const headers = [
 onMounted(() => {
   selectItems.value = getSelectItme()
   reset()
+  getDataItems()
+  intervalId = setInterval(() => {
+    getDataItems()
+  }, 5000)
 })
-
+onUnmounted(()=>{
+  if(intervalId) {
+    clearInterval(intervalId)
+  }
+})
 function add() {
   formModel.value = createNewRecord()
   isEditing.value = false
@@ -114,19 +124,32 @@ function remove(id) {
 }
 
 function save() {
-  if (formModel.value.stock) {
-    formModel.value.code = formModel.value.stock.code
-    formModel.value.name = formModel.value.stock.name
+  if (!formModel.value.stock) {
+    alert('请选择股票/基金')
+    return
+  }
+
+  const submitData = {
+    code: formModel.value.stock.code,
+    name: formModel.value.stock.name,
+    notice_configs: formModel.value.noticeConfigs.map(config => ({
+      notice_type: config.noticeType,
+      notice_unit: config.noticeUnit,
+      notice_value: config.noticeValue,
+    })),
+    start_date: formModel.value.start_date,
+    start_price: formModel.value.start_price,
   }
 
   if (formModel.value.id) {
+    submitData.id = formModel.value.id
     const index = dataItems.value.findIndex(item => item.id === formModel.value.id)
-    dataItems.value[index] = { ...formModel.value }
+    dataItems.value[index] = { ...formModel.value, ...submitData }
   } else {
-    formModel.value.id = dataItems.value.length + 1
-    dataItems.value.push({ ...formModel.value })
+    submitData.id = `${dataItems.value.length + 1}`
+    dataItems.value.push({ ...formModel.value, ...submitData })
   }
-  console.log("======>", formModel.value)
+  post('/api/v1/monitor', submitData)
 }
 
 function reset() {
@@ -145,7 +168,13 @@ function removeNoticeConfig(index) {
     formModel.value.noticeConfigs.splice(index, 1)
   }
 }
-
+const getDataItems = () => {
+  const data = get('/api/v1/monitor')
+  if (data.code == 0) {
+    dataItems.value = data.data.items
+    dataItemsLength.value = data.data.total
+  }
+}
 const getSelectItme = () => {
   return [
     { code: '000001', name: '平安银行' },
