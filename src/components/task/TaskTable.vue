@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { columns } from '@/vars/task'
 import { get } from '@/http/common'
+import { monitorApi } from '@/http/api'
 import type { Params } from '@/types/common';
 import type { TaskHistory, Task } from '@/types/task';
 let intervalId: number | null = null
@@ -71,7 +72,7 @@ const map_data = (data: Array<any>): Array<Task> => {
 
 }
 const get_data = () => {
-    get('/api/v1/task', parms).then((response) => {
+    get(monitorApi.list, parms).then((response) => {
         console.log('Response:', response, columns)
         tasks.value = map_data(response.data.data)
         tasks_length.value = response.data.total

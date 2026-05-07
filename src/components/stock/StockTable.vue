@@ -23,6 +23,7 @@
 import type { StockRow } from '@/types/stock';
 import { stockColumns } from '@/vars/stock';
 import { get } from '@/http/common';
+import { stockApi } from '@/http/api';
 const loading = ref(true)
 const showSnackbar = ref(false);
 const itemsPerPage = ref(10);
@@ -42,40 +43,48 @@ let params = {
 const props = defineProps({
     dataSourcePath: {
         type: String,
-        default: '/api/stock/list'
+        default: stockApi.list
     }
 })
+
 const handleSearch = (val: string) => {
     loadItems({ ...params, search: val });
 }
+
 const selectAreas = (val: string) => {
     params.area = val;
     loadItems(params);
 }
+
 const loadItems = async ({ page, itemsPerPage, sortBy, search }: any) => {
     params = {
         ...params,
         page: String(page),
         page_size: String(itemsPerPage ? itemsPerPage : 10),
-        order_by: sortBy !== undefined && sortBy?.[0]?.key !== undefined ? sortBy?.[0]?.key : "",
-        order: sortBy !== undefined && sortBy?.[0]?.order !== undefined ? sortBy?.[0]?.order : "",
+        order_by: sortBy?.[0]?.key ?? "",
+        order: sortBy?.[0]?.order ?? "",
         search: search || ''
     };
     loading.value = true;
-    get(props.dataSourcePath, params).then(res => {
+    try {
+        const res = await get(props.dataSourcePath, params);
         rows.value = res.data;
         totalItems.value = res.total;
+    } catch (error) {
+        console.error('加载数据失败:', error);
+    } finally {
         loading.value = false;
-
-    });
+    }
 }
 
 const handleFavorite = (item: StockRow) => {
-    const flag = item.follow == 1 || item.follow == '1' ? 0 : 1;
-    get(`/api/stock/follow/${item.code}/${flag}`).then(() => {
+    const flag = item.follow === 1 || item.follow === '1' ? 0 : 1;
+    get(stockApi.follow(item.code, flag)).then(() => {
         loadItems(params);
         showSnackbar.value = true;
-        tips_favorite.value = flag == 0 ? '已取消关注' : '已关注该股票';
+        tips_favorite.value = flag === 0 ? '已取消关注' : '已关注该股票';
+    }).catch(error => {
+        console.error('关注操作失败:', error);
     });
 }
 

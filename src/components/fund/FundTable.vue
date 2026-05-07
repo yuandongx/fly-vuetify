@@ -33,6 +33,7 @@
 </template>
 <script setup lang="ts">
 import { get } from '@/http/common'
+import { fundApi } from '@/http/api'
 import { type TableColumn, type TableRow } from '@/types/table'
 import { fundAllHeader } from '@/vars/fund'
 const items = ref<TableRow[]>([])
@@ -93,7 +94,7 @@ const handleSearch = (search: string) => {
 }
 const favorite = (item: TableRow) => {
     const flag = item.follow == 1 ||item.follow == '1' ? 0 : 1
-        get(`/api/fund/favorite/${item.code}/${flag}`).then(() => {
+        get(fundApi.favorite(item.code, flag)).then(() => {
             console.log(`favorited ${item.id}`)
             showSnackBar.value = true
             tip_message.value = flag == 0 ? '已取消关注' : '已关注该基金'
