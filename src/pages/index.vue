@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <h1>Hello World</h1>
-  </div>
+  <v-container fluid class="pa-4">
+    <MarketIndices />
+    <StockRanking />
+  </v-container>
 </template>
 
-<script lang="ts" setup>
-  //
+<script setup lang="ts">
+import MarketIndices from '@/components/index/MarketIndices.vue'
+import StockRanking from '@/components/index/StockRanking.vue'
 </script>
