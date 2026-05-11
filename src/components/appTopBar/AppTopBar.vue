@@ -1,12 +1,12 @@
 <template>
-  <v-app-bar :elevation="2" class="app-top-bar">
+  <v-app-bar class="app-top-bar" :elevation="2">
     <template #prepend>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon />
     </template>
     <AppTopMenu />
     <v-spacer />
-    <v-btn variant="tonal" color="white" class="login-btn">
-      <v-icon start icon="mdi-account-circle-outline"></v-icon>
+    <v-btn class="login-btn" color="white" variant="tonal">
+      <v-icon icon="mdi-account-circle-outline" start />
       登录
     </v-btn>
   </v-app-bar>

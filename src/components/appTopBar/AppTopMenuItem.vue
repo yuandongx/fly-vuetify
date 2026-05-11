@@ -1,38 +1,38 @@
 <template>
   <v-menu v-if="menuItem.children && menuItem.children.length > 0">
     <template #activator="{ props }">
-      <v-btn v-bind="props" variant="text" class="menu-btn">{{ menuItem.label }}</v-btn>
+      <v-btn v-bind="props" class="menu-btn" variant="text">{{ menuItem.label }}</v-btn>
     </template>
     <v-list class="menu-list" density="compact">
-      <v-list-item v-for="item in menuItem.children" :key="item.key" :to="item.to" class="menu-item">
+      <v-list-item v-for="item in menuItem.children" :key="item.key" class="menu-item" :to="item.to">
         <template #prepend>
-          <v-icon :icon="getIcon(item.key)" size="small" class="mr-2"></v-icon>
+          <v-icon class="mr-2" :icon="getIcon(item.key)" size="small" />
         </template>
         {{ item.label }}
       </v-list-item>
     </v-list>
   </v-menu>
-  <v-btn v-else :to="menuItem.to" variant="text" class="menu-btn">{{ menuItem.label }}</v-btn>
+  <v-btn v-else class="menu-btn" :to="menuItem.to" variant="text">{{ menuItem.label }}</v-btn>
 </template>
 
 <script lang="ts" setup>
-import { type MenuItem } from '@/vars/menuItems'
-const props = defineProps({
-  menuItem: {
-    type: Object as () => MenuItem,
-    default: () => ({})
-  }
-})
+  import type { MenuItem } from '@/vars/menuItems'
+  const props = defineProps({
+    menuItem: {
+      type: Object as () => MenuItem,
+      default: () => ({}),
+    },
+  })
 
-const getIcon = (key: string) => {
-  const iconMap: Record<string, string> = {
-    stock: 'mdi-chart-line',
-    fund: 'mdi-piggybank',
-    task: 'mdi-robot',
-    follow: 'mdi-star',
+  function getIcon (key: string) {
+    const iconMap: Record<string, string> = {
+      stock: 'mdi-chart-line',
+      fund: 'mdi-piggybank',
+      task: 'mdi-robot',
+      follow: 'mdi-star',
+    }
+    return iconMap[key] || 'mdi-circle-small'
   }
-  return iconMap[key] || 'mdi-circle-small'
-}
 </script>
 
 <style scoped>

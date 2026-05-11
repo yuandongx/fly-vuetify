@@ -7,48 +7,48 @@
           <!-- 搜索框 -->
           <v-text-field
             v-model="searchValue"
-            :loading="loading"
+            class="search-field"
+            clearable
             density="compact"
+            hide-details
+            :loading="loading"
             placeholder="搜索任务名称/接口名..."
             prepend-inner-icon="mdi-magnify"
-            variant="outlined"
-            hide-details
-            class="search-field"
             style="max-width: 280px"
-            @keyup.enter="onSearch"
-            clearable
+            variant="outlined"
             @click:clear="onClear"
-          ></v-text-field>
+            @keyup.enter="onSearch"
+          />
 
           <!-- 状态筛选 -->
           <v-select
             v-model="statusFilter"
-            :items="statusOptions"
-            density="compact"
-            variant="outlined"
-            hide-details
             class="filter-select"
-            style="max-width: 140px"
-            label="状态"
             clearable
-          ></v-select>
+            density="compact"
+            hide-details
+            :items="statusOptions"
+            label="状态"
+            style="max-width: 140px"
+            variant="outlined"
+          />
 
           <!-- 触发方式筛选 -->
           <v-select
             v-model="triggerFilter"
-            :items="triggerOptions"
-            density="compact"
-            variant="outlined"
-            hide-details
             class="filter-select"
-            style="max-width: 140px"
-            label="触发方式"
             clearable
-          ></v-select>
+            density="compact"
+            hide-details
+            :items="triggerOptions"
+            label="触发方式"
+            style="max-width: 140px"
+            variant="outlined"
+          />
         </div>
         <div class="header-stats">
-          <v-chip size="small" color="primary" variant="tonal">
-            <v-icon start icon="mdi-refresh" size="x-small"></v-icon>
+          <v-chip color="primary" size="small" variant="tonal">
+            <v-icon icon="mdi-refresh" size="x-small" start />
             自动刷新
           </v-chip>
         </div>
@@ -58,22 +58,22 @@
     <v-sheet border class="task-container">
       <!-- 数据表格 -->
       <v-data-table-server
+        class="task-table"
         :headers="headers"
         :items="tasks"
-        :options="tableOptions"
-        :loading="loading"
         :items-length="tasks_length"
-        class="task-table"
+        :loading="loading"
+        :options="tableOptions"
       >
         <!-- 加载状态 -->
         <template #loading>
-          <v-skeleton-loader type="table-row@5"></v-skeleton-loader>
+          <v-skeleton-loader type="table-row@5" />
         </template>
 
         <!-- 空状态 -->
         <template #no-data>
           <div class="d-flex flex-column align-center justify-center pa-8">
-            <v-icon icon="mdi-robot-off-outline" size="64" color="grey-lighten-1" class="mb-4"></v-icon>
+            <v-icon class="mb-4" color="grey-lighten-1" icon="mdi-robot-off-outline" size="64" />
             <div class="text-h6 text-grey">暂无任务记录</div>
             <div class="text-body-2 text-grey-lighten-1 mt-2">等待任务执行...</div>
           </div>
@@ -82,7 +82,7 @@
         <!-- 任务名称 -->
         <template #item.name="{ item }">
           <div class="d-flex align-center">
-            <v-icon :icon="getTaskIcon(item)" :color="getTaskIconColor(item)" size="small" class="mr-2"></v-icon>
+            <v-icon class="mr-2" :color="getTaskIconColor(item)" :icon="getTaskIcon(item)" size="small" />
             <span class="font-weight-medium">{{ item.name }}</span>
           </div>
         </template>
@@ -94,14 +94,14 @@
             size="small"
             variant="tonal"
           >
-            <v-icon start :icon="getStatusIcon(item.status)" size="x-small"></v-icon>
+            <v-icon :icon="getStatusIcon(item.status)" size="x-small" start />
             {{ item.status }}
           </v-chip>
         </template>
 
         <!-- 触发方式 -->
         <template #item.trigger="{ item }">
-          <v-chip size="x-small" variant="outlined" color="grey">
+          <v-chip color="grey" size="x-small" variant="outlined">
             {{ formatTrigger(item.trigger) }}
           </v-chip>
         </template>
@@ -114,7 +114,7 @@
         <!-- 运行时间 -->
         <template #item.start_time="{ item }">
           <div class="time-cell">
-            <v-icon icon="mdi-play" size="x-small" class="mr-1 text-success"></v-icon>
+            <v-icon class="mr-1 text-success" icon="mdi-play" size="x-small" />
             {{ formatTime(item.start_time) }}
           </div>
         </template>
@@ -122,7 +122,7 @@
         <!-- 持续时间 -->
         <template #item.duration="{ item }">
           <span class="duration-badge">
-            <v-icon icon="mdi-timer-outline" size="x-small" class="mr-1"></v-icon>
+            <v-icon class="mr-1" icon="mdi-timer-outline" size="x-small" />
             {{ formatDuration(item.duration) }}
           </span>
         </template>
@@ -131,44 +131,44 @@
         <template #item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
           <div class="d-flex ga-1">
             <v-btn
-              icon
-              variant="text"
-              size="x-small"
               color="primary"
+              icon
+              size="x-small"
+              variant="text"
               @click.stop="refreshTask(internalItem)"
             >
-              <v-icon icon="mdi-refresh" size="18"></v-icon>
+              <v-icon icon="mdi-refresh" size="18" />
               <v-tooltip activator="parent" location="top">刷新</v-tooltip>
             </v-btn>
             <v-menu location="bottom end">
               <template #activator="{ props }">
                 <v-btn
-                  icon
-                  variant="text"
-                  size="x-small"
                   color="grey"
+                  icon
+                  size="x-small"
+                  variant="text"
                   v-bind="props"
                 >
-                  <v-icon icon="mdi-dots-vertical" size="18"></v-icon>
+                  <v-icon icon="mdi-dots-vertical" size="18" />
                 </v-btn>
               </template>
-              <v-list density="compact" class="action-menu">
+              <v-list class="action-menu" density="compact">
                 <v-list-item @click="toggleExpand(internalItem)">
                   <template #prepend>
-                    <v-icon icon="mdi-history" size="small"></v-icon>
+                    <v-icon icon="mdi-history" size="small" />
                   </template>
                   <v-list-item-title>查看历史</v-list-item-title>
                 </v-list-item>
                 <v-list-item>
                   <template #prepend>
-                    <v-icon icon="mdi-pencil" size="small"></v-icon>
+                    <v-icon icon="mdi-pencil" size="small" />
                   </template>
                   <v-list-item-title>编辑任务</v-list-item-title>
                 </v-list-item>
-                <v-divider class="my-1"></v-divider>
+                <v-divider class="my-1" />
                 <v-list-item class="text-error">
                   <template #prepend>
-                    <v-icon icon="mdi-delete" size="small" color="error"></v-icon>
+                    <v-icon color="error" icon="mdi-delete" size="small" />
                   </template>
                   <v-list-item-title>删除</v-list-item-title>
                 </v-list-item>
@@ -180,8 +180,8 @@
         <!-- 展开行 - 历史记录 -->
         <template #expanded-row="{ columns, item }">
           <tr>
-            <td :colspan="columns.length" class="expanded-cell">
-              <task-table-history-row :rowData="get_history(item)" />
+            <td class="expanded-cell" :colspan="columns.length">
+              <task-table-history-row :row-data="get_history(item)" />
             </td>
           </tr>
         </template>
@@ -194,11 +194,11 @@
             </div>
             <v-pagination
               v-model="currentPage"
-              :length="Math.ceil(tasks_length / 10)"
-              :total-visible="5"
               density="compact"
+              :length="Math.ceil(tasks_length / 10)"
               rounded="circle"
-            ></v-pagination>
+              :total-visible="5"
+            />
           </div>
         </template>
       </v-data-table-server>
@@ -207,195 +207,195 @@
 </template>
 
 <script setup lang="ts">
-import { columns } from '@/vars/task'
-import { get } from '@/http/common'
-import { monitorApi } from '@/http/api'
-import type { Params } from '@/types/common'
-import type { TaskHistory, Task } from '@/types/task'
-import { watch } from 'vue'
+  import type { Params } from '@/types/common'
+  import type { Task, TaskHistory } from '@/types/task'
+  import { watch } from 'vue'
+  import { monitorApi } from '@/http/api'
+  import { get } from '@/http/common'
+  import { columns } from '@/vars/task'
 
-let intervalId: number | null = null
-const loading = ref(true)
-const tasks = ref<Task[]>([])
-const tasks_length = ref(0)
-const currentPage = ref(1)
-const headers = [...columns, { id: 9999, key: 'data-table-expand', title: '操作', sortable: false, align: 'end' as const }]
+  let intervalId: number | null = null
+  const loading = ref(true)
+  const tasks = ref<Task[]>([])
+  const tasks_length = ref(0)
+  const currentPage = ref(1)
+  const headers = [...columns, { id: 9999, key: 'data-table-expand', title: '操作', sortable: false, align: 'end' as const }]
 
-// 搜索和筛选
-const searchValue = ref('')
-const statusFilter = ref<string | null>(null)
-const triggerFilter = ref<string | null>(null)
+  // 搜索和筛选
+  const searchValue = ref('')
+  const statusFilter = ref<string | null>(null)
+  const triggerFilter = ref<string | null>(null)
 
-const statusOptions = [
-  { title: '成功', value: 'success' },
-  { title: '失败', value: 'failed' },
-  { title: '运行中', value: 'running' },
-  { title: '等待中', value: 'pending' },
-]
+  const statusOptions = [
+    { title: '成功', value: 'success' },
+    { title: '失败', value: 'failed' },
+    { title: '运行中', value: 'running' },
+    { title: '等待中', value: 'pending' },
+  ]
 
-const triggerOptions = [
-  { title: '手动', value: 'manual' },
-  { title: '定时', value: 'scheduled' },
-  { title: 'Webhook', value: 'webhook' },
-]
+  const triggerOptions = [
+    { title: '手动', value: 'manual' },
+    { title: '定时', value: 'scheduled' },
+    { title: 'Webhook', value: 'webhook' },
+  ]
 
-const parms: Params = reactive({
-  page: '1',
-  page_size: '10'
-})
-
-// 搜索和筛选处理
-const onSearch = () => {
-  parms.search = searchValue.value
-  get_data()
-}
-
-const onClear = () => {
-  searchValue.value = ''
-  parms.search = ''
-  get_data()
-}
-
-// 监听筛选条件变化
-watch([statusFilter, triggerFilter], ([newStatus, newTrigger]) => {
-  parms.status = newStatus || undefined
-  parms.trigger = newTrigger || undefined
-  get_data()
-})
-
-const map_data = (data: Array<any>): Array<Task> => {
-  return data.map((item: any) => ({
-    _id: item._id,
-    id: item.id,
-    name: item.name,
-    desc: item.msg,
-    start_time: item.start_time,
-    end_time: item.end_time,
-    next_time: item.next_time,
-    duration: item.duration,
-    status: item.status,
-    error: item.error,
-    interface_name: item.interface_name,
-    collection: item.collection,
-    trigger: item.trigger,
-    msg: item.msg,
-    histories: item.histories || []
-  }))
-}
-
-const get_data = () => {
-  loading.value = true
-  get(monitorApi.list, parms).then((response) => {
-    tasks.value = map_data(response.data.data)
-    tasks_length.value = response.data.total
-  }).catch((error) => {
-    console.error('获取任务数据失败:', error)
-  }).finally(() => {
-    loading.value = false
+  const parms: Params = reactive({
+    page: '1',
+    page_size: '10',
   })
-}
 
-const tableOptions = ({ page, itemsPerPage, sortBy }: any) => {
-  parms.page = String(page || 1)
-  parms.page_size = String(itemsPerPage || 10)
-  if (sortBy?.length) {
-    parms.sort = sortBy[0].key
-    parms.order = sortBy[0].order
-  }
-  get_data()
-}
-
-const refreshTask = (item: any) => {
-  console.log('刷新任务:', item)
-  get_data()
-}
-
-const get_history = (item: any): TaskHistory[] => {
-  const rows: TaskHistory[] = []
-  let count = 0
-  item.histories?.forEach((historyItem: any) => {
-    count += 1
-    rows.push({
-      id: `${item.id}_history_${count}`,
-      name: historyItem.name,
-      desc: historyItem.desc,
-      start_time: historyItem.start_time,
-      end_time: historyItem.end_time,
-      duration: historyItem.duration,
-      status: historyItem.status,
-      error: historyItem.error
-    })
-  })
-  return rows
-}
-
-// 格式化函数
-const getTaskIcon = (item: Task) => {
-  if (item.status === 'running') return 'mdi-loading mdi-spin'
-  if (item.error) return 'mdi-alert-circle'
-  return 'mdi-check-circle'
-}
-
-const getTaskIconColor = (item: Task) => {
-  if (item.status === 'running') return 'info'
-  if (item.error) return 'error'
-  return 'success'
-}
-
-const getStatusColor = (status: string) => {
-  const map: Record<string, string> = {
-    success: 'success',
-    failed: 'error',
-    running: 'info',
-    pending: 'warning',
-  }
-  return map[status?.toLowerCase()] || 'grey'
-}
-
-const getStatusIcon = (status: string) => {
-  const map: Record<string, string> = {
-    success: 'mdi-check-circle',
-    failed: 'mdi-alert-circle',
-    running: 'mdi-loading mdi-spin',
-    pending: 'mdi-clock-outline',
-  }
-  return map[status?.toLowerCase()] || 'mdi-help-circle'
-}
-
-const formatTrigger = (trigger: string) => {
-  const map: Record<string, string> = {
-    manual: '手动',
-    scheduled: '定时',
-    webhook: 'Webhook',
-  }
-  return map[trigger] || trigger || '-'
-}
-
-const formatTime = (time: string) => {
-  if (!time) return '-'
-  return time.replace('T', ' ').substring(0, 19)
-}
-
-const formatDuration = (ms: number) => {
-  if (!ms) return '-'
-  if (ms < 1000) return `${ms}ms`
-  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`
-  return `${(ms / 60000).toFixed(1)}min`
-}
-
-// 初始化
-onMounted(() => {
-  get_data()
-  intervalId = setInterval(() => {
+  // 搜索和筛选处理
+  function onSearch () {
+    parms.search = searchValue.value
     get_data()
-  }, 5000)
-})
-
-onUnmounted(() => {
-  if (intervalId) {
-    clearInterval(intervalId)
   }
-})
+
+  function onClear () {
+    searchValue.value = ''
+    parms.search = ''
+    get_data()
+  }
+
+  // 监听筛选条件变化
+  watch([statusFilter, triggerFilter], ([newStatus, newTrigger]) => {
+    parms.status = newStatus || undefined
+    parms.trigger = newTrigger || undefined
+    get_data()
+  })
+
+  function map_data (data: Array<any>): Array<Task> {
+    return data.map((item: any) => ({
+      _id: item._id,
+      id: item.id,
+      name: item.name,
+      desc: item.msg,
+      start_time: item.start_time,
+      end_time: item.end_time,
+      next_time: item.next_time,
+      duration: item.duration,
+      status: item.status,
+      error: item.error,
+      interface_name: item.interface_name,
+      collection: item.collection,
+      trigger: item.trigger,
+      msg: item.msg,
+      histories: item.histories || [],
+    }))
+  }
+
+  function get_data () {
+    loading.value = true
+    get(monitorApi.list, parms).then(response => {
+      tasks.value = map_data(response.data.data)
+      tasks_length.value = response.data.total
+    }).catch(error => {
+      console.error('获取任务数据失败:', error)
+    }).finally(() => {
+      loading.value = false
+    })
+  }
+
+  function tableOptions ({ page, itemsPerPage, sortBy }: any) {
+    parms.page = String(page || 1)
+    parms.page_size = String(itemsPerPage || 10)
+    if (sortBy?.length) {
+      parms.sort = sortBy[0].key
+      parms.order = sortBy[0].order
+    }
+    get_data()
+  }
+
+  function refreshTask (item: any) {
+    console.log('刷新任务:', item)
+    get_data()
+  }
+
+  function get_history (item: any): TaskHistory[] {
+    const rows: TaskHistory[] = []
+    let count = 0
+    item.histories?.forEach((historyItem: any) => {
+      count += 1
+      rows.push({
+        id: `${item.id}_history_${count}`,
+        name: historyItem.name,
+        desc: historyItem.desc,
+        start_time: historyItem.start_time,
+        end_time: historyItem.end_time,
+        duration: historyItem.duration,
+        status: historyItem.status,
+        error: historyItem.error,
+      })
+    })
+    return rows
+  }
+
+  // 格式化函数
+  function getTaskIcon (item: Task) {
+    if (item.status === 'running') return 'mdi-loading mdi-spin'
+    if (item.error) return 'mdi-alert-circle'
+    return 'mdi-check-circle'
+  }
+
+  function getTaskIconColor (item: Task) {
+    if (item.status === 'running') return 'info'
+    if (item.error) return 'error'
+    return 'success'
+  }
+
+  function getStatusColor (status: string) {
+    const map: Record<string, string> = {
+      success: 'success',
+      failed: 'error',
+      running: 'info',
+      pending: 'warning',
+    }
+    return map[status?.toLowerCase()] || 'grey'
+  }
+
+  function getStatusIcon (status: string) {
+    const map: Record<string, string> = {
+      success: 'mdi-check-circle',
+      failed: 'mdi-alert-circle',
+      running: 'mdi-loading mdi-spin',
+      pending: 'mdi-clock-outline',
+    }
+    return map[status?.toLowerCase()] || 'mdi-help-circle'
+  }
+
+  function formatTrigger (trigger: string) {
+    const map: Record<string, string> = {
+      manual: '手动',
+      scheduled: '定时',
+      webhook: 'Webhook',
+    }
+    return map[trigger] || trigger || '-'
+  }
+
+  function formatTime (time: string) {
+    if (!time) return '-'
+    return time.replace('T', ' ').slice(0, 19)
+  }
+
+  function formatDuration (ms: number) {
+    if (!ms) return '-'
+    if (ms < 1000) return `${ms}ms`
+    if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`
+    return `${(ms / 60_000).toFixed(1)}min`
+  }
+
+  // 初始化
+  onMounted(() => {
+    get_data()
+    intervalId = setInterval(() => {
+      get_data()
+    }, 5000)
+  })
+
+  onUnmounted(() => {
+    if (intervalId) {
+      clearInterval(intervalId)
+    }
+  })
 </script>
 
 <style scoped>

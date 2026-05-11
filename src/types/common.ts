@@ -1,1 +1,1 @@
-export type Params = Record<string, string>;
+export type Params = Record<string, string>

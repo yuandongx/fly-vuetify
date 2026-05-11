@@ -2,13 +2,13 @@
   <div class="fund-page">
     <v-sheet border class="fund-container">
       <!-- 基金表格 -->
-      <fund-table data-source-path="/api/fund/rank" :data-headers="fundRankHeader"></fund-table>
+      <fund-table :data-headers="fundRankHeader" data-source-path="/api/fund/rank" />
     </v-sheet>
   </div>
 </template>
 
 <script setup lang="ts">
-import { fundRankHeader } from '@/vars/fund'
+  import { fundRankHeader } from '@/vars/fund'
 </script>
 
 <style scoped>

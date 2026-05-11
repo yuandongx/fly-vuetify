@@ -1,37 +1,37 @@
 <template>
   <div class="table-actions">
     <v-btn
-      icon
-      variant="text"
-      size="small"
       color="primary"
+      icon
+      size="small"
+      variant="text"
       @click="$emit('edit', id)"
     >
-      <v-icon icon="mdi-pencil-outline" size="18"></v-icon>
+      <v-icon icon="mdi-pencil-outline" size="18" />
       <v-tooltip activator="parent" location="top">编辑</v-tooltip>
     </v-btn>
     <v-btn
-      icon
-      variant="text"
-      size="small"
       color="error"
+      icon
+      size="small"
+      variant="text"
       @click="$emit('delete', id)"
     >
-      <v-icon icon="mdi-delete-outline" size="18"></v-icon>
+      <v-icon icon="mdi-delete-outline" size="18" />
       <v-tooltip activator="parent" location="top">删除</v-tooltip>
     </v-btn>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps({
-  id: {
-    type: [Number, String],
-    required: true,
-  },
-})
+  defineProps({
+    id: {
+      type: [Number, String],
+      required: true,
+    },
+  })
 
-defineEmits(['edit', 'delete'])
+  defineEmits(['edit', 'delete'])
 </script>
 
 <style scoped>

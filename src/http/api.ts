@@ -1,5 +1,4 @@
-
-type C = string|number|undefined
+type C = string | number | undefined
 
 /** 监控任务相关API */
 export const monitorApi = {

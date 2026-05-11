@@ -1,3 +1,3 @@
 <template>
-    <TaskMonitor />
+  <TaskMonitor />
 </template>

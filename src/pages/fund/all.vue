@@ -2,13 +2,13 @@
   <div class="fund-page">
     <v-sheet border class="fund-container">
       <!-- 基金表格 -->
-      <fund-table data-source-path="/api/fund/all" :data-headers="fundAllHeader"></fund-table>
+      <fund-table :data-headers="fundAllHeader" data-source-path="/api/fund/all" />
     </v-sheet>
   </div>
 </template>
 
 <script setup lang="ts">
-import { fundAllHeader } from '@/vars/fund'
+  import { fundAllHeader } from '@/vars/fund'
 </script>
 
 <style scoped>

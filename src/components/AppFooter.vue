@@ -1,8 +1,8 @@
 <template>
-  <v-footer app height="48" class="app-footer">
+  <v-footer app class="app-footer" height="48">
     <div class="footer-content">
       <div class="footer-left">
-        <v-icon icon="mdi-chart-line" size="small" class="mr-1"></v-icon>
+        <v-icon class="mr-1" icon="mdi-chart-line" size="small" />
         <span class="text-caption">智能股票监控系统</span>
       </div>
       <div class="footer-right">

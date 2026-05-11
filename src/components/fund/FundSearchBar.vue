@@ -5,39 +5,39 @@
         <!-- 搜索框 -->
         <v-text-field
           v-model="searchValue"
-          :loading="loading"
+          class="search-field"
+          clearable
           density="compact"
+          hide-details
+          :loading="loading"
           placeholder="搜索基金名称/代码..."
           prepend-inner-icon="mdi-magnify"
-          variant="outlined"
-          hide-details
-          class="search-field"
           style="max-width: 320px"
-          @keyup.enter="onSearch"
-          clearable
+          variant="outlined"
           @click:clear="onClear"
+          @keyup.enter="onSearch"
         >
           <template #append-inner>
-            <v-icon v-if="!loading" icon="mdi-magnify" class="search-icon" @click="onSearch"></v-icon>
+            <v-icon v-if="!loading" class="search-icon" icon="mdi-magnify" @click="onSearch" />
           </template>
         </v-text-field>
 
         <!-- 刷新按钮 -->
         <v-btn
-          variant="outlined"
-          color="white"
-          size="small"
-          :loading="refreshing"
-          @click="onRefresh"
           class="refresh-btn"
+          color="white"
+          :loading="refreshing"
+          size="small"
+          variant="outlined"
+          @click="onRefresh"
         >
-          <v-icon start icon="mdi-refresh"></v-icon>
+          <v-icon icon="mdi-refresh" start />
           刷新数据
         </v-btn>
 
         <!-- 数据更新时间 -->
-        <v-chip size="small" variant="flat" class="update-chip">
-          <v-icon start icon="mdi-clock-outline" size="x-small"></v-icon>
+        <v-chip class="update-chip" size="small" variant="flat">
+          <v-icon icon="mdi-clock-outline" size="x-small" start />
           每10秒自动更新
         </v-chip>
       </div>
@@ -46,42 +46,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+  import { ref } from 'vue'
 
-const loading = ref(false)
-const refreshing = ref(false)
-const searchValue = ref('')
+  const loading = ref(false)
+  const refreshing = ref(false)
+  const searchValue = ref('')
 
-const props = defineProps({
-  onSearch: {
-    type: Function,
-    default: () => {}
-  },
-  onRefresh: {
-    type: Function,
-    default: () => {}
+  const props = defineProps({
+    onSearch: {
+      type: Function,
+      default: () => {},
+    },
+    onRefresh: {
+      type: Function,
+      default: () => {},
+    },
+  })
+
+  function onSearch () {
+    loading.value = true
+    props.onSearch(searchValue.value)
+    setTimeout(() => {
+      loading.value = false
+    }, 300)
   }
-})
 
-const onSearch = () => {
-  loading.value = true
-  props.onSearch(searchValue.value)
-  setTimeout(() => {
-    loading.value = false
-  }, 300)
-}
+  function onClear () {
+    props.onSearch('')
+  }
 
-const onClear = () => {
-  props.onSearch('')
-}
-
-const onRefresh = () => {
-  refreshing.value = true
-  props.onRefresh()
-  setTimeout(() => {
-    refreshing.value = false
-  }, 500)
-}
+  function onRefresh () {
+    refreshing.value = true
+    props.onRefresh()
+    setTimeout(() => {
+      refreshing.value = false
+    }, 500)
+  }
 </script>
 
 <style scoped>

@@ -3,10 +3,10 @@
     <td class="text-left font-weight-medium">
       <div class="d-flex align-center ga-2">
         <v-chip
+          class="rank-chip"
           :color="getChangeColor(item.change)"
           size="x-small"
           variant="tonal"
-          class="rank-chip"
         >
           {{ getChangeLabel(item.change) }}
         </v-chip>
@@ -19,10 +19,10 @@
     </td>
     <td class="text-right" :class="getChangeColorClass(item.change)">
       <v-icon
+        class="mr-1"
         :icon="getChangeIcon(item.change)"
         size="x-small"
-        class="mr-1"
-      ></v-icon>
+      />
       {{ formatChange(item.change) }}
     </td>
     <td class="text-right">
@@ -34,131 +34,131 @@
     <td class="text-right">
       <div class="d-flex ga-1 justify-end">
         <v-btn
-          icon
-          variant="text"
-          size="small"
           :color="isFavorite ? 'red' : 'grey'"
+          icon
+          size="small"
+          variant="text"
           @click="onFavorite"
         >
-          <v-icon :icon="isFavorite ? 'mdi-heart' : 'mdi-heart-outline'" size="20"></v-icon>
+          <v-icon :icon="isFavorite ? 'mdi-heart' : 'mdi-heart-outline'" size="20" />
           <v-tooltip activator="parent" location="top">
             {{ isFavorite ? '取消关注' : '添加关注' }}
           </v-tooltip>
         </v-btn>
         <v-btn
-          icon
-          variant="text"
-          size="small"
           color="grey"
+          icon
+          size="small"
+          variant="text"
           @click="onMore"
         >
-          <v-icon icon="mdi-dots-vertical" size="20"></v-icon>
+          <v-icon icon="mdi-dots-vertical" size="20" />
         </v-btn>
       </div>
     </td>
   </tr>
-  <slot name="snack-bar"></slot>
+  <slot name="snack-bar" />
 </template>
 
 <script setup lang="ts">
-import type { TableColumn, TableRow } from '@/types/table'
+  import type { TableColumn, TableRow } from '@/types/table'
 
-const props = defineProps({
-  item: {
-    type: Object as PropType<TableRow>,
-    default: () => ({}),
-  },
-  headers: {
-    type: Array as PropType<TableColumn[]>,
-    default: () => [],
-  },
-  onHandleMore: {
-    type: Function as PropType<(item: TableRow) => void>,
-    default: () => {},
-  },
-  favorite: {
-    type: Function as PropType<() => void>,
-    default: () => {},
-  },
-})
+  const props = defineProps({
+    item: {
+      type: Object as PropType<TableRow>,
+      default: () => ({}),
+    },
+    headers: {
+      type: Array as PropType<TableColumn[]>,
+      default: () => [],
+    },
+    onHandleMore: {
+      type: Function as PropType<(item: TableRow) => void>,
+      default: () => {},
+    },
+    favorite: {
+      type: Function as PropType<() => void>,
+      default: () => {},
+    },
+  })
 
-// 统一解析数值为 number 或 null
-const parseValue = (value: string | number | undefined | null): number | null => {
-  if (value === null || value === undefined || value === '') return null
-  const num = typeof value === 'string' ? parseFloat(value) : value
-  return isNaN(num) ? null : num
-}
+  // 统一解析数值为 number 或 null
+  function parseValue (value: string | number | undefined | null): number | null {
+    if (value === null || value === undefined || value === '') return null
+    const num = typeof value === 'string' ? Number.parseFloat(value) : value
+    return isNaN(num) ? null : num
+  }
 
-const isFavorite = computed(() => {
-  return props.item.follow === 1 || props.item.follow === '1'
-})
+  const isFavorite = computed(() => {
+    return props.item.follow === 1 || props.item.follow === '1'
+  })
 
-// 获取涨跌图标
-const getChangeIcon = (value: string | number | undefined | null) => {
-  const num = parseValue(value)
-  if (num === null) return 'mdi-minus'
-  return num >= 0 ? 'mdi-trending-up' : 'mdi-trending-down'
-}
+  // 获取涨跌图标
+  function getChangeIcon (value: string | number | undefined | null) {
+    const num = parseValue(value)
+    if (num === null) return 'mdi-minus'
+    return num >= 0 ? 'mdi-trending-up' : 'mdi-trending-down'
+  }
 
-const getChangeColor = (value: string | number | undefined | null) => {
-  const num = parseValue(value)
-  if (num === null) return 'grey'
-  if (num > 0) return 'error'
-  if (num < 0) return 'success'
-  return 'grey'
-}
+  function getChangeColor (value: string | number | undefined | null) {
+    const num = parseValue(value)
+    if (num === null) return 'grey'
+    if (num > 0) return 'error'
+    if (num < 0) return 'success'
+    return 'grey'
+  }
 
-const getChangeColorClass = (value: string | number | undefined | null) => {
-  const num = parseValue(value)
-  if (num === null) return 'text-grey'
-  if (num > 0) return 'text-error font-weight-bold'
-  if (num < 0) return 'text-success font-weight-bold'
-  return 'text-grey'
-}
+  function getChangeColorClass (value: string | number | undefined | null) {
+    const num = parseValue(value)
+    if (num === null) return 'text-grey'
+    if (num > 0) return 'text-error font-weight-bold'
+    if (num < 0) return 'text-success font-weight-bold'
+    return 'text-grey'
+  }
 
-const getChangeLabel = (value: string | number | undefined | null) => {
-  const num = parseValue(value)
-  if (num === null) return '平'
-  if (num > 0) return '涨'
-  if (num < 0) return '跌'
-  return '平'
-}
+  function getChangeLabel (value: string | number | undefined | null) {
+    const num = parseValue(value)
+    if (num === null) return '平'
+    if (num > 0) return '涨'
+    if (num < 0) return '跌'
+    return '平'
+  }
 
-const formatPrice = (price: string | number | undefined | null) => {
-  const num = parseValue(price)
-  if (num === null) return '-'
-  return `¥${num.toFixed(2)}`
-}
+  function formatPrice (price: string | number | undefined | null) {
+    const num = parseValue(price)
+    if (num === null) return '-'
+    return `¥${num.toFixed(2)}`
+  }
 
-const formatChange = (change: string | number | undefined | null) => {
-  const num = parseValue(change)
-  if (num === null) return '-'
-  const sign = num >= 0 ? '+' : ''
-  return `${sign}${num.toFixed(2)}`
-}
+  function formatChange (change: string | number | undefined | null) {
+    const num = parseValue(change)
+    if (num === null) return '-'
+    const sign = num >= 0 ? '+' : ''
+    return `${sign}${num.toFixed(2)}`
+  }
 
-const formatPercent = (percent: string | number | undefined | null) => {
-  const num = parseValue(percent)
-  if (num === null) return '-'
-  const sign = num >= 0 ? '+' : ''
-  return `${sign}${num.toFixed(2)}%`
-}
+  function formatPercent (percent: string | number | undefined | null) {
+    const num = parseValue(percent)
+    if (num === null) return '-'
+    const sign = num >= 0 ? '+' : ''
+    return `${sign}${num.toFixed(2)}%`
+  }
 
-const formatVolume = (volume: string | number | undefined | null) => {
-  const num = parseValue(volume)
-  if (num === null) return '-'
-  if (num >= 100000000) return `${(num / 100000000).toFixed(2)}亿`
-  if (num >= 10000) return `${(num / 10000).toFixed(2)}万`
-  return num.toFixed(0)
-}
+  function formatVolume (volume: string | number | undefined | null) {
+    const num = parseValue(volume)
+    if (num === null) return '-'
+    if (num >= 100_000_000) return `${(num / 100_000_000).toFixed(2)}亿`
+    if (num >= 10_000) return `${(num / 10_000).toFixed(2)}万`
+    return num.toFixed(0)
+  }
 
-const onFavorite = () => {
-  props.favorite()
-}
+  function onFavorite () {
+    props.favorite()
+  }
 
-const onMore = () => {
-  props.onHandleMore(props.item)
-}
+  function onMore () {
+    props.onHandleMore(props.item)
+  }
 </script>
 
 <style scoped>

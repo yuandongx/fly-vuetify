@@ -5,20 +5,20 @@
         <!-- 搜索框 -->
         <v-text-field
           v-model="searchValue"
-          :loading="loading"
+          class="search-field"
+          clearable
           density="compact"
+          hide-details
+          :loading="loading"
           placeholder="搜索股票名称/代码..."
           prepend-inner-icon="mdi-magnify"
-          variant="outlined"
-          hide-details
-          class="search-field"
           style="max-width: 280px"
-          @keyup.enter="onSearch"
-          clearable
+          variant="outlined"
           @click:clear="onClear"
+          @keyup.enter="onSearch"
         >
           <template #append-inner>
-            <v-icon v-if="!loading" icon="mdi-magnify" class="search-icon" @click="onSearch"></v-icon>
+            <v-icon v-if="!loading" class="search-icon" icon="mdi-magnify" @click="onSearch" />
           </template>
         </v-text-field>
 
@@ -27,30 +27,30 @@
           <v-btn-toggle
             v-model="selectAreas"
             color="primary"
-            mandatory
             density="compact"
-            variant="outlined"
             divided
+            mandatory
+            variant="outlined"
             @update:model-value="updateSelectAreas"
           >
-            <v-btn value="sh" size="small">
-              <v-icon start icon="mdi-home" size="x-small"></v-icon>
+            <v-btn size="small" value="sh">
+              <v-icon icon="mdi-home" size="x-small" start />
               上证
             </v-btn>
-            <v-btn value="sz" size="small">
-              <v-icon start icon="mdi-home-city" size="x-small"></v-icon>
+            <v-btn size="small" value="sz">
+              <v-icon icon="mdi-home-city" size="x-small" start />
               深证
             </v-btn>
-            <v-btn value="bj" size="small">
-              <v-icon start icon="mdi-office-building" size="x-small"></v-icon>
+            <v-btn size="small" value="bj">
+              <v-icon icon="mdi-office-building" size="x-small" start />
               北证
             </v-btn>
           </v-btn-toggle>
         </div>
       </div>
       <div class="header-stats">
-        <v-chip size="small" color="primary" variant="tonal">
-          <v-icon start icon="mdi-refresh" size="x-small"></v-icon>
+        <v-chip color="primary" size="small" variant="tonal">
+          <v-icon icon="mdi-refresh" size="x-small" start />
           实时更新
         </v-chip>
       </div>
@@ -59,38 +59,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+  import { ref } from 'vue'
 
-const loading = ref(false)
-const selectAreas = ref(['sh', 'sz', 'bj'])
-const searchValue = ref('')
+  const loading = ref(false)
+  const selectAreas = ref(['sh', 'sz', 'bj'])
+  const searchValue = ref('')
 
-const props = defineProps({
-  onSearch: {
-    type: Function,
-    default: () => {}
-  },
-  onSelectAreas: {
-    type: Function,
-    default: () => {}
+  const props = defineProps({
+    onSearch: {
+      type: Function,
+      default: () => {},
+    },
+    onSelectAreas: {
+      type: Function,
+      default: () => {},
+    },
+  })
+
+  function onSearch () {
+    loading.value = true
+    props.onSearch(searchValue.value)
+    setTimeout(() => {
+      loading.value = false
+    }, 300)
   }
-})
 
-const onSearch = () => {
-  loading.value = true
-  props.onSearch(searchValue.value)
-  setTimeout(() => {
-    loading.value = false
-  }, 300)
-}
+  function onClear () {
+    props.onSearch('')
+  }
 
-const onClear = () => {
-  props.onSearch('')
-}
-
-const updateSelectAreas = () => {
-  props.onSelectAreas(selectAreas.value.join(','))
-}
+  function updateSelectAreas () {
+    props.onSelectAreas(selectAreas.value.join(','))
+  }
 </script>
 
 <style scoped>

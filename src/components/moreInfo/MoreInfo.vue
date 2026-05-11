@@ -1,21 +1,21 @@
 <template>
   <div class="text-center pa-4">
-    <v-dialog v-model="dialog" transition="dialog-bottom-transition" max-width="600">
+    <v-dialog v-model="dialog" max-width="600" transition="dialog-bottom-transition">
       <v-card class="more-info-card">
         <div class="info-toolbar">
           <div class="d-flex align-center">
-            <v-icon icon="mdi-information-outline" class="mr-2"></v-icon>
+            <v-icon class="mr-2" icon="mdi-information-outline" />
             <span class="text-h6">详情信息</span>
           </div>
-          <v-btn icon="mdi-close" variant="text" @click="dialog = false"></v-btn>
+          <v-btn icon="mdi-close" variant="text" @click="dialog = false" />
         </div>
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-text class="pa-6">
-          <slot name="info"></slot>
+          <slot name="info" />
         </v-card-text>
-        <v-divider></v-divider>
+        <v-divider />
         <div class="pa-4">
-          <slot name="monitor-info"></slot>
+          <slot name="monitor-info" />
         </div>
       </v-card>
     </v-dialog>
@@ -23,11 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
-const dialog = defineModel({ required: true, default: false })
-const notifications = shallowRef(false)
-const sound = shallowRef(true)
-const widgets = shallowRef(false)
+  import { shallowRef } from 'vue'
+  const dialog = defineModel({ required: true, default: false })
+  const notifications = shallowRef(false)
+  const sound = shallowRef(true)
+  const widgets = shallowRef(false)
 </script>
 
 <style scoped>

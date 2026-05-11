@@ -4,7 +4,7 @@
       <!-- 市场指数 -->
       <MarketIndices />
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <!-- 股票排名 -->
       <StockRanking />
@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import MarketIndices from '@/components/index/MarketIndices.vue'
-import StockRanking from '@/components/index/StockRanking.vue'
+  import MarketIndices from '@/components/index/MarketIndices.vue'
+  import StockRanking from '@/components/index/StockRanking.vue'
 </script>
 
 <style scoped>
