@@ -1,19 +1,20 @@
 <template>
   <div class="stock-header">
     <div class="header-content">
-      <div class="d-flex align-center flex-wrap ga-4">
+      <div class="d-flex align-center flex-wrap ga-6 filter-controls">
         <!-- 搜索框 -->
         <v-text-field
           v-model="searchValue"
           class="search-field"
           clearable
-          density="compact"
+          density="comfortable"
           hide-details
           :loading="loading"
           placeholder="搜索股票名称/代码..."
           prepend-inner-icon="mdi-magnify"
-          style="max-width: 280px"
-          variant="outlined"
+          style="min-width: 260px; max-width: 340px"
+          variant="solo-filled"
+          rounded="lg"
           @click:clear="onClear"
           @keyup.enter="onSearch"
         >
@@ -23,33 +24,33 @@
         </v-text-field>
 
         <!-- 市场筛选按钮组 -->
-        <div class="d-flex ga-2">
-          <v-btn-toggle
-            v-model="selectAreas"
-            color="primary"
-            density="compact"
-            divided
-            mandatory
-            variant="outlined"
-            @update:model-value="updateSelectAreas"
-          >
-            <v-btn size="small" value="sh">
-              <v-icon icon="mdi-home" size="x-small" start />
-              上证
-            </v-btn>
-            <v-btn size="small" value="sz">
-              <v-icon icon="mdi-home-city" size="x-small" start />
-              深证
-            </v-btn>
-            <v-btn size="small" value="bj">
-              <v-icon icon="mdi-office-building" size="x-small" start />
-              北证
-            </v-btn>
-          </v-btn-toggle>
-        </div>
+        <v-btn-toggle
+          v-model="selectAreas"
+          class="market-toggle"
+          color="white"
+          density="comfortable"
+          divided
+          mandatory
+          variant="outlined"
+          rounded="lg"
+          @update:model-value="updateSelectAreas"
+        >
+          <v-btn value="sh">
+            <v-icon icon="mdi-home" size="x-small" start />
+            上证
+          </v-btn>
+          <v-btn value="sz">
+            <v-icon icon="mdi-home-city" size="x-small" start />
+            深证
+          </v-btn>
+          <v-btn value="bj">
+            <v-icon icon="mdi-office-building" size="x-small" start />
+            北证
+          </v-btn>
+        </v-btn-toggle>
       </div>
       <div class="header-stats">
-        <v-chip color="primary" size="small" variant="tonal">
+        <v-chip color="primary" size="comfortable" variant="tonal" rounded="pill">
           <v-icon icon="mdi-refresh" size="x-small" start />
           实时更新
         </v-chip>
@@ -96,7 +97,7 @@
 <style scoped>
 .stock-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 16px 20px;
+  padding: 20px 24px;
 }
 
 .header-content {
@@ -104,13 +105,17 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 20px;
+}
+
+.filter-controls {
+  margin-left: -8px;
 }
 
 .header-stats {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .header-stats .v-chip {
@@ -118,13 +123,37 @@
   color: white !important;
 }
 
-.search-field :deep(.v-field) {
-  border-radius: 0;
-  background: white;
+.search-field {
+  font-size: 14px;
 }
 
-.search-field :deep(.v-field__outline) {
-  --v-field-border-opacity: 0.2;
+.search-field :deep(.v-field) {
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.search-field :deep(.v-field:hover) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.search-field :deep(.v-field__input) {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.market-toggle {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.market-toggle :deep(.v-btn) {
+  color: white !important;
+  text-transform: none;
+}
+
+.market-toggle :deep(.v-btn--active) {
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 .search-icon {

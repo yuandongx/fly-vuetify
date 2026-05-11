@@ -3,18 +3,19 @@
     <!-- 自定义头部 -->
     <div class="table-header">
       <div class="header-content">
-        <div class="d-flex align-center flex-wrap ga-4">
+        <div class="d-flex align-center flex-wrap ga-6 filter-controls">
           <!-- 搜索框 -->
           <v-text-field
             v-model="searchValue"
             class="search-field"
             clearable
-            density="compact"
+            density="comfortable"
             hide-details
             placeholder="搜索代码/名称..."
             prepend-inner-icon="mdi-magnify"
-            style="max-width: 200px"
-            variant="outlined"
+            style="min-width: 220px; max-width: 300px"
+            variant="solo-filled"
+            rounded="lg"
             @click:clear="searchValue = ''"
           />
 
@@ -23,12 +24,13 @@
             v-model="typeFilter"
             class="filter-select"
             clearable
-            density="compact"
+            density="comfortable"
             hide-details
             :items="typeOptions"
             label="类型"
-            style="max-width: 120px"
-            variant="outlined"
+            style="min-width: 100px; max-width: 140px"
+            variant="solo-filled"
+            rounded="lg"
           />
 
           <!-- 状态筛选 -->
@@ -36,16 +38,17 @@
             v-model="statusFilter"
             class="filter-select"
             clearable
-            density="compact"
+            density="comfortable"
             hide-details
             :items="statusOptions"
             label="状态"
-            style="max-width: 120px"
-            variant="outlined"
+            style="min-width: 100px; max-width: 140px"
+            variant="solo-filled"
+            rounded="lg"
           />
         </div>
         <div class="header-actions">
-          <v-btn color="white" variant="flat" @click="openDialog()">
+          <v-btn color="white" variant="flat" rounded="lg" @click="openDialog()">
             <v-icon icon="mdi-plus" start />
             新增记录
           </v-btn>
@@ -814,7 +817,7 @@
 
 .table-header {
   background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-  padding: 16px 20px;
+  padding: 20px 24px;
   border-radius: 12px 12px 0 0;
 }
 
@@ -823,7 +826,11 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 20px;
+}
+
+.filter-controls {
+  margin-left: -8px;
 }
 
 .header-actions .v-btn {
@@ -834,14 +841,28 @@
   background: rgba(255, 255, 255, 0.9) !important;
 }
 
-.search-field :deep(.v-field) {
-  border-radius: 0;
-  background: white;
+.search-field,
+.filter-select {
+  font-size: 14px;
 }
 
+.search-field :deep(.v-field),
 .filter-select :deep(.v-field) {
-  border-radius: 0;
-  background: white;
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.search-field :deep(.v-field:hover),
+.filter-select :deep(.v-field:hover) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.search-field :deep(.v-field__input),
+.filter-select :deep(.v-field__input) {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .note-container {

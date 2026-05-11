@@ -3,19 +3,20 @@
     <!-- 自定义头部 -->
     <div class="table-header">
       <div class="header-content">
-        <div class="d-flex align-center flex-wrap ga-4">
+        <div class="d-flex align-center flex-wrap ga-6 filter-controls">
           <!-- 搜索框 -->
           <v-text-field
             v-model="searchValue"
             class="search-field"
             clearable
-            density="compact"
+            density="comfortable"
             hide-details
             :loading="loading"
             placeholder="搜索任务名称/接口名..."
             prepend-inner-icon="mdi-magnify"
-            style="max-width: 280px"
-            variant="outlined"
+            style="min-width: 260px; max-width: 340px"
+            variant="solo-filled"
+            rounded="lg"
             @click:clear="onClear"
             @keyup.enter="onSearch"
           />
@@ -25,12 +26,13 @@
             v-model="statusFilter"
             class="filter-select"
             clearable
-            density="compact"
+            density="comfortable"
             hide-details
             :items="statusOptions"
             label="状态"
-            style="max-width: 140px"
-            variant="outlined"
+            style="min-width: 120px; max-width: 160px"
+            variant="solo-filled"
+            rounded="lg"
           />
 
           <!-- 触发方式筛选 -->
@@ -38,16 +40,17 @@
             v-model="triggerFilter"
             class="filter-select"
             clearable
-            density="compact"
+            density="comfortable"
             hide-details
             :items="triggerOptions"
             label="触发方式"
-            style="max-width: 140px"
-            variant="outlined"
+            style="min-width: 120px; max-width: 160px"
+            variant="solo-filled"
+            rounded="lg"
           />
         </div>
         <div class="header-stats">
-          <v-chip color="primary" size="small" variant="tonal">
+          <v-chip color="primary" size="comfortable" variant="tonal" rounded="pill">
             <v-icon icon="mdi-refresh" size="x-small" start />
             自动刷新
           </v-chip>
@@ -414,13 +417,17 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 20px;
+}
+
+.filter-controls {
+  margin-left: -8px;
 }
 
 .header-stats {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .header-stats .v-chip {
@@ -428,18 +435,28 @@
   color: white !important;
 }
 
-.search-field :deep(.v-field) {
-  border-radius: 0;
-  background: white;
+.search-field,
+.filter-select {
+  font-size: 14px;
 }
 
-.search-field :deep(.v-field__outline) {
-  --v-field-border-opacity: 0.2;
-}
-
+.search-field :deep(.v-field),
 .filter-select :deep(.v-field) {
-  border-radius: 0;
-  background: white;
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.search-field :deep(.v-field:hover),
+.filter-select :deep(.v-field:hover) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.search-field :deep(.v-field__input),
+.filter-select :deep(.v-field__input) {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .task-container {
