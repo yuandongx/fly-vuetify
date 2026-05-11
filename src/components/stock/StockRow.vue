@@ -163,28 +163,29 @@ const onMore = () => {
 
 <style scoped>
 .stock-row {
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .stock-row:hover {
-  background-color: rgba(var(--v-theme-primary), 0.04);
-  transform: translateX(2px);
+  background-color: rgba(102, 126, 234, 0.06) !important;
+  transform: translateX(4px);
 }
 
 .stock-row.is-favorite {
-  background-color: rgba(255, 0, 0, 0.02);
+  background-color: rgba(244, 67, 54, 0.04);
 }
 
 .stock-name {
-  font-weight: 500;
+  font-weight: 600;
   color: rgba(0, 0, 0, 0.87);
 }
 
 .rank-chip {
-  font-weight: 600;
-  min-width: 28px;
+  font-weight: 700;
+  min-width: 32px;
   justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .price-value {

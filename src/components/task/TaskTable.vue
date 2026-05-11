@@ -1,30 +1,61 @@
 <template>
   <div class="task-page">
-    <v-sheet border rounded class="task-container">
-      <!-- 页面头部 -->
-      <div class="page-header">
-        <div class="d-flex align-center">
-          <v-avatar color="info" size="40" class="mr-3">
-            <v-icon icon="mdi-robot"></v-icon>
-          </v-avatar>
-          <div>
-            <div class="text-h6 font-weight-bold">任务运行记录</div>
-            <div class="text-caption text-grey">
-              <v-icon icon="mdi-refresh" size="x-small" class="mr-1"></v-icon>
-              自动刷新中
-            </div>
-          </div>
+    <!-- 自定义头部 -->
+    <div class="table-header">
+      <div class="header-content">
+        <div class="d-flex align-center flex-wrap ga-4">
+          <!-- 搜索框 -->
+          <v-text-field
+            v-model="searchValue"
+            :loading="loading"
+            density="compact"
+            placeholder="搜索任务名称/接口名..."
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            hide-details
+            class="search-field"
+            style="max-width: 280px"
+            @keyup.enter="onSearch"
+            clearable
+            @click:clear="onClear"
+          ></v-text-field>
+
+          <!-- 状态筛选 -->
+          <v-select
+            v-model="statusFilter"
+            :items="statusOptions"
+            density="compact"
+            variant="outlined"
+            hide-details
+            class="filter-select"
+            style="max-width: 140px"
+            label="状态"
+            clearable
+          ></v-select>
+
+          <!-- 触发方式筛选 -->
+          <v-select
+            v-model="triggerFilter"
+            :items="triggerOptions"
+            density="compact"
+            variant="outlined"
+            hide-details
+            class="filter-select"
+            style="max-width: 140px"
+            label="触发方式"
+            clearable
+          ></v-select>
         </div>
-        <div class="d-flex align-center ga-3">
+        <div class="header-stats">
           <v-chip size="small" color="primary" variant="tonal">
-            <v-icon start icon="mdi-counter" size="x-small"></v-icon>
-            共 {{ tasks_length }} 条
+            <v-icon start icon="mdi-refresh" size="x-small"></v-icon>
+            自动刷新
           </v-chip>
         </div>
       </div>
+    </div>
 
-      <v-divider></v-divider>
-
+    <v-sheet border class="task-container">
       <!-- 数据表格 -->
       <v-data-table-server
         :headers="headers"
@@ -181,6 +212,7 @@ import { get } from '@/http/common'
 import { monitorApi } from '@/http/api'
 import type { Params } from '@/types/common'
 import type { TaskHistory, Task } from '@/types/task'
+import { watch } from 'vue'
 
 let intervalId: number | null = null
 const loading = ref(true)
@@ -189,10 +221,47 @@ const tasks_length = ref(0)
 const currentPage = ref(1)
 const headers = [...columns, { id: 9999, key: 'data-table-expand', title: '操作', sortable: false, align: 'end' as const }]
 
-const parms: Params = {
+// 搜索和筛选
+const searchValue = ref('')
+const statusFilter = ref<string | null>(null)
+const triggerFilter = ref<string | null>(null)
+
+const statusOptions = [
+  { title: '成功', value: 'success' },
+  { title: '失败', value: 'failed' },
+  { title: '运行中', value: 'running' },
+  { title: '等待中', value: 'pending' },
+]
+
+const triggerOptions = [
+  { title: '手动', value: 'manual' },
+  { title: '定时', value: 'scheduled' },
+  { title: 'Webhook', value: 'webhook' },
+]
+
+const parms: Params = reactive({
   page: '1',
   page_size: '10'
+})
+
+// 搜索和筛选处理
+const onSearch = () => {
+  parms.search = searchValue.value
+  get_data()
 }
+
+const onClear = () => {
+  searchValue.value = ''
+  parms.search = ''
+  get_data()
+}
+
+// 监听筛选条件变化
+watch([statusFilter, triggerFilter], ([newStatus, newTrigger]) => {
+  parms.status = newStatus || undefined
+  parms.trigger = newTrigger || undefined
+  get_data()
+})
 
 const map_data = (data: Array<any>): Array<Task> => {
   return data.map((item: any) => ({
@@ -226,8 +295,14 @@ const get_data = () => {
   })
 }
 
-const tableOptions = ({ page, itemsPerPage, sortBy, search }: any) => {
-  // 处理分页和排序
+const tableOptions = ({ page, itemsPerPage, sortBy }: any) => {
+  parms.page = String(page || 1)
+  parms.page_size = String(itemsPerPage || 10)
+  if (sortBy?.length) {
+    parms.sort = sortBy[0].key
+    parms.order = sortBy[0].order
+  }
+  get_data()
 }
 
 const refreshTask = (item: any) => {
@@ -328,23 +403,49 @@ onUnmounted(() => {
   padding: 16px;
 }
 
-.task-container {
-  border-radius: 16px !important;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+.table-header {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  padding: 16px 20px;
+  border-radius: 12px 12px 0 0;
 }
 
-.page-header {
+.header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  color: white;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.page-header .text-grey {
-  color: rgba(255, 255, 255, 0.8) !important;
+.header-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-stats .v-chip {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.search-field :deep(.v-field) {
+  border-radius: 0;
+  background: white;
+}
+
+.search-field :deep(.v-field__outline) {
+  --v-field-border-opacity: 0.2;
+}
+
+.filter-select :deep(.v-field) {
+  border-radius: 0;
+  background: white;
+}
+
+.task-container {
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: white;
 }
 
 .task-table :deep(.v-data-table__thead) {
@@ -362,7 +463,8 @@ onUnmounted(() => {
 }
 
 .task-table :deep(.v-data-table__tr:hover) {
-  background-color: rgba(var(--v-theme-primary), 0.04) !important;
+  background-color: rgba(245, 158, 11, 0.06) !important;
+  transform: translateX(2px);
 }
 
 .time-cell {
@@ -373,28 +475,31 @@ onUnmounted(() => {
 .duration-badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.04);
-  border-radius: 4px;
+  padding: 4px 10px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 6px;
   font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
+  color: #d97706;
 }
 
 .interface-code {
   font-family: 'Monaco', 'Menlo', monospace;
   font-size: 0.8rem;
-  padding: 2px 6px;
-  background: rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
+  padding: 4px 8px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .action-menu {
   min-width: 160px;
-  border-radius: 8px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .expanded-cell {
   padding: 16px !important;
-  background-color: #fafafa;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
 }
 </style>

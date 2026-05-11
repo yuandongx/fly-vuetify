@@ -2,19 +2,18 @@
   <v-row>
     <!-- 涨幅榜 -->
     <v-col cols="12" md="6">
-      <v-sheet border rounded class="h-100">
-        <div class="d-flex align-center justify-space-between pa-4">
-          <h3 class="text-subtitle-1 font-weight-medium text-red-darken-2">
+      <v-sheet border rounded class="h-100 ranking-sheet">
+        <div class="ranking-header rise-header">
+          <h3 class="text-subtitle-1 font-weight-medium">
             <v-icon icon="mdi-trending-up" class="mr-1"></v-icon>
             涨幅榜 TOP10
           </h3>
         </div>
-        <v-divider></v-divider>
         <v-table density="compact" class="ranking-table">
           <thead>
             <tr>
+              <th class="text-left text-caption">排名</th>
               <th class="text-left text-caption">名称</th>
-              <th class="text-center text-caption">代码</th>
               <th class="text-right text-caption">最新价</th>
               <th class="text-right text-caption">涨跌幅</th>
             </tr>
@@ -22,15 +21,20 @@
           <tbody>
             <tr v-for="(item, index) in riseRanking" :key="item.code" class="rise-row">
               <td class="py-2">
-                <v-chip :color="getRiseColor(item.changePercent)" size="small" variant="tonal">
+                <v-chip :color="getRiseColor(item.changePercent)" size="small" variant="tonal" class="rank-chip">
                   {{ index + 1 }}
                 </v-chip>
-                <span class="ml-2">{{ item.name }}</span>
               </td>
-              <td class="text-center text-caption">{{ item.code }}</td>
-              <td class="text-right">{{ item.price.toFixed(2) }}</td>
-              <td class="text-right text-red font-weight-bold">
-                +{{ item.changePercent.toFixed(2) }}%
+              <td class="py-2">
+                <span class="stock-name">{{ item.name }}</span>
+                <span class="text-caption text-grey ml-1">{{ item.code }}</span>
+              </td>
+              <td class="text-right font-weight-medium">{{ item.price.toFixed(2) }}</td>
+              <td class="text-right">
+                <v-chip :color="getRiseColor(item.changePercent)" size="small" variant="tonal" class="percent-chip">
+                  <v-icon start :icon="item.changePercent >= 0 ? 'mdi-trending-up' : 'mdi-trending-down'" size="x-small"></v-icon>
+                  +{{ item.changePercent.toFixed(2) }}%
+                </v-chip>
               </td>
             </tr>
           </tbody>
@@ -40,19 +44,18 @@
 
     <!-- 跌幅榜 -->
     <v-col cols="12" md="6">
-      <v-sheet border rounded class="h-100">
-        <div class="d-flex align-center justify-space-between pa-4">
-          <h3 class="text-subtitle-1 font-weight-medium text-green-darken-2">
+      <v-sheet border rounded class="h-100 ranking-sheet">
+        <div class="ranking-header fall-header">
+          <h3 class="text-subtitle-1 font-weight-medium">
             <v-icon icon="mdi-trending-down" class="mr-1"></v-icon>
             跌幅榜 TOP10
           </h3>
         </div>
-        <v-divider></v-divider>
         <v-table density="compact" class="ranking-table">
           <thead>
             <tr>
+              <th class="text-left text-caption">排名</th>
               <th class="text-left text-caption">名称</th>
-              <th class="text-center text-caption">代码</th>
               <th class="text-right text-caption">最新价</th>
               <th class="text-right text-caption">涨跌幅</th>
             </tr>
@@ -60,15 +63,20 @@
           <tbody>
             <tr v-for="(item, index) in fallRanking" :key="item.code" class="fall-row">
               <td class="py-2">
-                <v-chip :color="getFallColor(item.changePercent)" size="small" variant="tonal">
+                <v-chip :color="getFallColor(item.changePercent)" size="small" variant="tonal" class="rank-chip">
                   {{ index + 1 }}
                 </v-chip>
-                <span class="ml-2">{{ item.name }}</span>
               </td>
-              <td class="text-center text-caption">{{ item.code }}</td>
-              <td class="text-right">{{ item.price.toFixed(2) }}</td>
-              <td class="text-right text-green font-weight-bold">
-                {{ item.changePercent.toFixed(2) }}%
+              <td class="py-2">
+                <span class="stock-name">{{ item.name }}</span>
+                <span class="text-caption text-grey ml-1">{{ item.code }}</span>
+              </td>
+              <td class="text-right font-weight-medium">{{ item.price.toFixed(2) }}</td>
+              <td class="text-right">
+                <v-chip :color="getFallColor(item.changePercent)" size="small" variant="tonal" class="percent-chip">
+                  <v-icon start :icon="'mdi-trending-down'" size="x-small"></v-icon>
+                  {{ item.changePercent.toFixed(2) }}%
+                </v-chip>
               </td>
             </tr>
           </tbody>
@@ -148,6 +156,27 @@ defineExpose({ riseRanking, fallRanking })
 </script>
 
 <style scoped>
+.ranking-sheet {
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ranking-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.rise-header {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%);
+  border-bottom: 1px solid rgba(244, 67, 54, 0.1);
+}
+
+.fall-header {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+  border-bottom: 1px solid rgba(76, 175, 80, 0.1);
+}
+
 .ranking-table {
   font-size: 0.875rem;
 }
@@ -155,5 +184,21 @@ defineExpose({ riseRanking, fallRanking })
 .rise-row:hover,
 .fall-row:hover {
   background-color: rgba(0, 0, 0, 0.02);
+  transform: translateX(2px);
+  transition: all 0.2s ease;
+}
+
+.rank-chip {
+  font-weight: 600;
+  min-width: 28px;
+  justify-content: center;
+}
+
+.stock-name {
+  font-weight: 500;
+}
+
+.percent-chip {
+  font-weight: 600;
 }
 </style>

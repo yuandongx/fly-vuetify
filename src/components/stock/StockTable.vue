@@ -179,14 +179,14 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .stock-table-container {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   background: white;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .header-divider {
-  border-color: #dee2e6;
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .stock-table :deep(.v-data-table__thead) {
@@ -202,6 +202,10 @@ onBeforeUnmount(() => {
 
 .stock-table :deep(.v-data-table__tr) {
   transition: all 0.2s ease;
+}
+
+.stock-table :deep(.v-data-table__tr:hover) {
+  background-color: rgba(102, 126, 234, 0.04) !important;
 }
 
 .stock-table :deep(.v-data-table__td) {

@@ -1,43 +1,46 @@
 <template>
-  <div class="fund-search-bar pa-4 rounded-t-lg">
-    <div class="d-flex align-center flex-wrap ga-4">
-      <!-- 搜索框 -->
-      <v-text-field
-        v-model="searchValue"
-        :loading="loading"
-        density="compact"
-        placeholder="搜索基金名称/代码..."
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        hide-details
-        class="search-field"
-        style="max-width: 320px"
-        @keyup.enter="onSearch"
-        clearable
-        @click:clear="onClear"
-      >
-        <template #append-inner>
-          <v-icon v-if="!loading" icon="mdi-magnify" class="search-icon" @click="onSearch"></v-icon>
-        </template>
-      </v-text-field>
+  <div class="fund-search-bar">
+    <div class="header-content">
+      <div class="d-flex align-center flex-wrap ga-4">
+        <!-- 搜索框 -->
+        <v-text-field
+          v-model="searchValue"
+          :loading="loading"
+          density="compact"
+          placeholder="搜索基金名称/代码..."
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          hide-details
+          class="search-field"
+          style="max-width: 320px"
+          @keyup.enter="onSearch"
+          clearable
+          @click:clear="onClear"
+        >
+          <template #append-inner>
+            <v-icon v-if="!loading" icon="mdi-magnify" class="search-icon" @click="onSearch"></v-icon>
+          </template>
+        </v-text-field>
 
-      <!-- 刷新按钮 -->
-      <v-btn
-        variant="tonal"
-        color="primary"
-        size="small"
-        :loading="refreshing"
-        @click="onRefresh"
-      >
-        <v-icon start icon="mdi-refresh"></v-icon>
-        刷新数据
-      </v-btn>
+        <!-- 刷新按钮 -->
+        <v-btn
+          variant="outlined"
+          color="white"
+          size="small"
+          :loading="refreshing"
+          @click="onRefresh"
+          class="refresh-btn"
+        >
+          <v-icon start icon="mdi-refresh"></v-icon>
+          刷新数据
+        </v-btn>
 
-      <!-- 数据更新时间 -->
-      <span class="text-body-2 text-grey ml-auto">
-        <v-icon icon="mdi-clock-outline" size="x-small" class="mr-1"></v-icon>
-        每10秒自动更新
-      </span>
+        <!-- 数据更新时间 -->
+        <v-chip size="small" variant="flat" class="update-chip">
+          <v-icon start icon="mdi-clock-outline" size="x-small"></v-icon>
+          每10秒自动更新
+        </v-chip>
+      </div>
     </div>
   </div>
 </template>
@@ -83,17 +86,25 @@ const onRefresh = () => {
 
 <style scoped>
 .fund-search-bar {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid #dee2e6;
-  border-bottom: none;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  padding: 16px 20px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .search-field :deep(.v-field) {
-  border-radius: 8px;
+  border-radius: 0;
+  background: white;
 }
 
 .search-field :deep(.v-field__outline) {
-  --v-field-border-opacity: 0.3;
+  --v-field-border-opacity: 0.2;
 }
 
 .search-icon {
@@ -104,5 +115,20 @@ const onRefresh = () => {
 
 .search-icon:hover {
   opacity: 1;
+}
+
+.refresh-btn {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: white !important;
+  text-transform: none;
+}
+
+.refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.update-chip {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
 }
 </style>

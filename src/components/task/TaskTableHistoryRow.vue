@@ -85,6 +85,8 @@ function formatDuration(ms: number) {
 .history-container {
   margin: 8px 0;
   overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .history-header {
@@ -99,15 +101,17 @@ function formatDuration(ms: number) {
 }
 
 .history-row {
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .history-row:hover {
-  background-color: rgba(var(--v-theme-primary), 0.04);
+  background-color: rgba(17, 153, 142, 0.04);
+  transform: translateX(2px);
 }
 
 .duration-cell {
   font-variant-numeric: tabular-nums;
-  color: rgba(0, 0, 0, 0.7);
+  color: #11998e;
+  font-weight: 500;
 }
 </style>

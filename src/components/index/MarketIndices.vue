@@ -1,24 +1,29 @@
 <template>
-  <v-sheet border rounded class="mb-4">
-    <div class="d-flex align-center justify-space-between pa-4">
+  <v-sheet border rounded class="mb-4 market-indices-sheet">
+    <div class="indices-header">
       <h2 class="text-h6 font-weight-medium">
         <v-icon icon="mdi-chart-line" class="mr-2"></v-icon>
         市场指数
       </h2>
+      <v-chip size="small" color="primary" variant="tonal">
+        <v-icon start icon="mdi-refresh" size="x-small"></v-icon>
+        每3秒更新
+      </v-chip>
     </div>
-    <v-slide-group show-arrows class="px-4 pb-4">
+    <v-slide-group show-arrows class="px-4 pb-4 indices-carousel">
       <v-slide-group-item v-for="item in marketIndices" :key="item.code">
         <v-card
-          :color="getColor(item.change)"
-          class="ma-2 pa-3 rounded-lg index-card"
+          :class="['ma-2 pa-4 rounded-xl index-card', item.change >= 0 ? 'rise-card' : 'fall-card']"
           min-width="180"
         >
           <div class="d-flex flex-column">
-            <span class="text-body-2 font-weight-medium text-white">{{ item.name }}</span>
-            <span class="text-h5 font-weight-bold text-white">{{ item.price.toFixed(2) }}</span>
-            <div class="d-flex align-center mt-1">
+            <span class="text-body-2 font-weight-medium index-name">{{ item.name }}</span>
+            <span class="text-h5 font-weight-bold index-price">{{ item.price.toFixed(2) }}</span>
+            <div class="d-flex align-center mt-2">
               <v-icon :icon="item.change >= 0 ? 'mdi-trending-up' : 'mdi-trending-down'" size="small" class="mr-1"></v-icon>
-              <span class="text-body-1 font-weight-bold text-white">{{ formatChange(item.change, item.changePercent) }}</span>
+              <span :class="['text-body-1 font-weight-bold', item.change >= 0 ? 'text-error' : 'text-success']">
+                {{ formatChange(item.change, item.changePercent) }}
+              </span>
             </div>
           </div>
         </v-card>
@@ -77,11 +82,61 @@ defineExpose({ marketIndices })
 </script>
 
 <style scoped>
-.index-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+.market-indices-sheet {
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
+
+.indices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.indices-header h2 {
+  color: white;
+}
+
+.indices-header .v-chip {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.indices-carousel :deep(.v-slide-group__prev),
+.indices-carousel :deep(.v-slide-group__next) {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rise-card {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.fall-card {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.index-card {
+  transition: all 0.3s ease;
+}
+
 .index-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.index-name {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.index-price {
+  font-variant-numeric: tabular-nums;
+  color: rgba(0, 0, 0, 0.87);
 }
 </style>

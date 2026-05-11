@@ -143,21 +143,21 @@ const onMore = () => {
 
 <style scoped>
 .fund-row {
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .fund-row:hover {
-  background-color: rgba(var(--v-theme-primary), 0.04);
-  transform: translateX(2px);
+  background-color: rgba(17, 153, 142, 0.06) !important;
+  transform: translateX(4px);
 }
 
 .fund-row.is-favorite {
-  background-color: rgba(255, 0, 0, 0.02);
+  background-color: rgba(244, 67, 54, 0.04);
 }
 
 .fund-icon {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .fund-name {

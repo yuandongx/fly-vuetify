@@ -1,33 +1,48 @@
 <template>
   <div class="monitor-page">
-    <v-sheet border rounded class="monitor-container">
-      <!-- 页面头部 -->
-      <div class="page-header">
-        <div class="d-flex align-center">
-          <v-avatar color="primary" size="40" class="mr-3">
-            <v-icon icon="mdi-book-multiple"></v-icon>
-          </v-avatar>
-          <div>
-            <div class="text-h6 font-weight-bold">监控任务</div>
-            <div class="text-caption text-grey">
-              <v-icon icon="mdi-refresh" size="x-small" class="mr-1"></v-icon>
-              每5秒自动刷新
-            </div>
-          </div>
+    <!-- 自定义头部 -->
+    <div class="table-header">
+      <div class="header-content">
+        <div class="d-flex align-center flex-wrap ga-4">
+          <!-- 搜索框 -->
+          <v-text-field
+            v-model="searchValue"
+            :loading="loading"
+            density="compact"
+            placeholder="搜索股票/基金名称/代码..."
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            hide-details
+            class="search-field"
+            style="max-width: 280px"
+            @keyup.enter="onSearch"
+            clearable
+            @click:clear="onClear"
+          ></v-text-field>
+
+          <!-- 监控状态筛选 -->
+          <v-select
+            v-model="monitorFilter"
+            :items="monitorOptions"
+            density="compact"
+            variant="outlined"
+            hide-details
+            class="filter-select"
+            style="max-width: 140px"
+            label="监控状态"
+            clearable
+          ></v-select>
         </div>
-        <v-btn
-          color="primary"
-          prepend-icon="mdi-plus"
-          rounded="lg"
-          @click="add"
-          class="add-btn"
-        >
-          新增任务
-        </v-btn>
+        <div class="header-stats">
+          <v-chip size="small" color="primary" variant="tonal">
+            <v-icon start icon="mdi-refresh" size="x-small"></v-icon>
+            实时更新
+          </v-chip>
+        </div>
       </div>
+    </div>
 
-      <v-divider></v-divider>
-
+    <v-sheet border class="monitor-container">
       <!-- 数据表格 -->
       <v-data-table-server
         :headers="headers"
@@ -179,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, shallowRef } from 'vue'
+import { onMounted, ref, shallowRef, computed, watch } from 'vue'
 import { post, get } from '@/http/common'
 import { monitorApi } from '@/http/api'
 
@@ -208,14 +223,70 @@ function createNewRecord() {
 }
 
 const selectItems = ref([])
-const dataItems = ref([])
-const dataItemsLength = ref(0)
+const rawDataItems = ref([])
+const dataItemsLength = computed(() => dataItems.value.length)
 const loading = ref(false)
 const formModel = ref(createNewRecord())
 const dialog = shallowRef(false)
 const isEditing = ref(false)
 const snackbar = ref({ show: false, text: '' })
 let intervalId = undefined
+
+// 搜索和筛选
+const searchValue = ref('')
+const monitorFilter = ref<string | null>(null)
+
+const monitorOptions = [
+  { title: '上涨中', value: 'rise' },
+  { title: '下跌中', value: 'fall' },
+  { title: '持平', value: 'stable' },
+]
+
+// 原始数据
+const rawDataItems = ref([])
+
+// 过滤后的数据
+const dataItems = computed(() => {
+  let result = [...rawDataItems.value]
+
+  // 按关键词搜索
+  if (searchValue.value) {
+    const keyword = searchValue.value.toLowerCase()
+    result = result.filter(item =>
+      item.name?.toLowerCase().includes(keyword) ||
+      item.code?.toLowerCase().includes(keyword)
+    )
+  }
+
+  // 按监控状态筛选
+  if (monitorFilter.value) {
+    result = result.filter(item => {
+      const change = item.chang_percent || 0
+      switch (monitorFilter.value) {
+        case 'rise': return change > 0
+        case 'fall': return change < 0
+        case 'stable': return change === 0
+        default: return true
+      }
+    })
+  }
+
+  return result
+})
+
+// 搜索和筛选处理
+const onSearch = () => {
+  // 搜索通过 computed 自动处理
+}
+
+const onClear = () => {
+  searchValue.value = ''
+}
+
+// 监听筛选条件变化
+watch(monitorFilter, () => {
+  // 筛选通过 computed 自动处理
+})
 
 const headers = [
   { title: '代码', key: 'code', align: 'start', width: '100px' },
@@ -350,8 +421,7 @@ const getDataItems = async () => {
   try {
     const data = await get(monitorApi.monitor)
     if (data.code == 0) {
-      dataItems.value = data.data.items
-      dataItemsLength.value = data.data.total
+      rawDataItems.value = data.data.items
     }
   } catch (error) {
     console.error('获取数据失败:', error)
@@ -393,28 +463,49 @@ onUnmounted(() => {
   padding: 16px;
 }
 
-.monitor-container {
-  border-radius: 16px !important;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+.table-header {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  padding: 16px 20px;
+  border-radius: 12px 12px 0 0;
 }
 
-.page-header {
+.header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.page-header .text-grey {
-  color: rgba(255, 255, 255, 0.8) !important;
+.header-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.add-btn {
-  text-transform: none;
-  font-weight: 600;
+.header-stats .v-chip {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.search-field :deep(.v-field) {
+  border-radius: 0;
+  background: white;
+}
+
+.search-field :deep(.v-field__outline) {
+  --v-field-border-opacity: 0.2;
+}
+
+.filter-select :deep(.v-field) {
+  border-radius: 0;
+  background: white;
+}
+
+.monitor-container {
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: white;
 }
 
 .monitor-table :deep(.v-data-table__thead) {
@@ -432,7 +523,8 @@ onUnmounted(() => {
 }
 
 .monitor-table :deep(.v-data-table__tr:hover) {
-  background-color: rgba(var(--v-theme-primary), 0.04);
+  background-color: rgba(102, 126, 234, 0.06) !important;
+  transform: translateX(2px);
 }
 
 .price-cell {
@@ -446,11 +538,13 @@ onUnmounted(() => {
 
 .expanded-cell {
   padding: 16px !important;
-  background-color: #fafafa;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
 }
 
 .notice-sheet {
   overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .notice-header {
@@ -465,6 +559,6 @@ onUnmounted(() => {
 }
 
 .notice-table tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(102, 126, 234, 0.04);
 }
 </style>

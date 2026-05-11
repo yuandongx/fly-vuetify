@@ -104,8 +104,9 @@ function handleSave() {
 
 <style scoped>
 .task-dialog {
-  border-radius: 16px !important;
+  border-radius: 20px !important;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .dialog-header {
@@ -113,7 +114,12 @@ function handleSave() {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.dialog-header .text-grey {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .form-section {

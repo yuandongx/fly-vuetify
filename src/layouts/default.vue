@@ -1,8 +1,8 @@
 <template>
-  <v-responsive>
+  <v-responsive class="app-wrapper">
     <v-app>
       <AppTopBar />
-      <v-main>
+      <v-main class="main-content">
         <router-view />
       </v-main>
       <AppFooter />
@@ -13,3 +13,14 @@
 <script lang="ts" setup>
   //
 </script>
+
+<style scoped>
+.app-wrapper {
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.main-content {
+  background: transparent;
+}
+</style>
