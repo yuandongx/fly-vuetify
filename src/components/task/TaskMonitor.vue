@@ -223,7 +223,6 @@ function createNewRecord() {
 }
 
 const selectItems = ref([])
-const rawDataItems = ref([])
 const dataItemsLength = computed(() => dataItems.value.length)
 const loading = ref(false)
 const formModel = ref(createNewRecord())
