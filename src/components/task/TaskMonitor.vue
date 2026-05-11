@@ -17,7 +17,6 @@
             style="max-width: 280px"
             variant="outlined"
             @click:clear="onClear"
-            @keyup.enter="onSearch"
           />
 
           <!-- 监控状态筛选 -->
@@ -84,24 +83,24 @@
 
         <!-- 现价列 -->
         <template #item.price="{ item }">
-          <span class="price-cell">{{ formatPrice(item.price) }}</span>
+          <span class="price-cell">{{ formatPrice(item.start_price) }}</span>
         </template>
 
         <!-- 涨跌列 -->
         <template #item.chang_price="{ item }">
-          <span :class="getChangeClass(item.chang_price)">
-            {{ formatChange(item.chang_price) }}
+          <span :class="getChangeClass(item.start_price)">
+            {{ formatChange(item.start_price) }}
           </span>
         </template>
 
         <!-- 涨跌幅列 -->
         <template #item.chang_percent="{ item }">
           <v-chip
-            :color="getChangeChipColor(item.chang_percent)"
+            :color="getChangeChipColor(item.start_price)"
             size="small"
             variant="tonal"
           >
-            {{ formatPercent(item.chang_percent) }}
+            {{ formatPercent(item.start_price) }}
           </v-chip>
         </template>
 
@@ -194,9 +193,9 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref, shallowRef } from 'vue'
-  import { monitorApi } from '@/http/api'
-  import { get, post } from '@/http/common'
+  import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue'
+  import { getMonitorList, saveMonitorTask } from '@/http/task'
+  import type { MonitorSubmitData, MonitorRecord } from '@/types/task'
 
   /**
    * 获取当前日期并格式化为 YYYY-MM-DD 格式
@@ -209,7 +208,7 @@
     return `${year}-${month}-${day}`
   }
 
-  function createNewRecord () {
+  function createNewRecord (): MonitorRecord {
     return {
       code: '',
       name: '',
@@ -222,14 +221,18 @@
     }
   }
 
-  const selectItems = ref([])
+  const selectItems = ref<Array<{name: string, code: string}>>([])
   const dataItemsLength = computed(() => dataItems.value.length)
-  const loading = ref(false)
-  const formModel = ref(createNewRecord())
+  const loading = ref<boolean>(false)
+  const formModel = ref<MonitorRecord>(createNewRecord())
   const dialog = shallowRef(false)
   const isEditing = ref(false)
   const snackbar = ref({ show: false, text: '' })
   let intervalId: ReturnType<typeof setInterval> | undefined
+
+  // 刷新控制变量（必须在 onMounted 之前声明）
+  const refreshInterval = 5000 // 刷新间隔(ms)
+  let lastRefreshTime = 0      // 上次刷新时间
 
   // 搜索和筛选
   const searchValue = ref('')
@@ -241,8 +244,8 @@
     { title: '持平', value: 'stable' },
   ]
 
-  // 原始数据
-  const rawDataItems = ref([])
+  // 原始数据（使用提交数据类型，因为API返回的是下划线格式）
+  const rawDataItems = ref<Array<MonitorSubmitData>>([])
 
   // 过滤后的数据
   const dataItems = computed(() => {
@@ -260,7 +263,7 @@
     // 按监控状态筛选
     if (monitorFilter.value) {
       result = result.filter(item => {
-        const change = item.chang_percent || 0
+        const change = item.start_price || 0
         switch (monitorFilter.value) {
           case 'rise': { return change > 0
           }
@@ -282,7 +285,7 @@
     searchValue.value = ''
   }
 
-  const headers = [
+  const headers: Array<{title: string, key: string, align?: "start"|"end", width: string, "sortable"?: boolean}>= [
     { title: '代码', key: 'code', align: 'start', width: '100px' },
     { title: '名称', key: 'name', width: '120px' },
     { title: '现价', key: 'price', width: '100px' },
@@ -295,12 +298,12 @@
   ]
 
   // 格式化函数
-  function formatPrice (price: number) {
+  function formatPrice (price: number|undefined) {
     if (price === null || price === undefined || Number.isNaN(price)) return '-'
     return `¥${price.toFixed(2)}`
   }
 
-  function formatChange (change: number) {
+  function formatChange (change: number|undefined) {
     if (change === null || change === undefined || Number.isNaN(change)) return '-'
     const sign = change >= 0 ? '+' : ''
     return `${sign}${change.toFixed(2)}`
@@ -345,39 +348,50 @@
     dialog.value = true
   }
 
-  function edit (id) {
+  function edit (id: string|number) {
     // 从原始数据中查找，确保修改的是源数据
     const found = rawDataItems.value.find(item => item.id === id)
     if (!found) {
       snackbar.value = { show: true, text: '记录不存在' }
       return
     }
+    // 将下划线格式转为驼峰格式
     formModel.value = {
-      ...found,
+      id: found.id,
+      code: found.code,
+      name: found.name,
       stock: { code: found.code, name: found.name },
-      noticeConfigs: found.noticeConfigs?.length
-        ? [...found.noticeConfigs]
+      noticeConfigs: found.notice_configs?.length
+        ? found.notice_configs.map(n => ({
+          noticeType: n.notice_type as any,
+          noticeUnit: n.notice_unit as any,
+          noticeValue: n.notice_value,
+        }))
         : [...createNewRecord().noticeConfigs],
+      start_date: found.start_date,
+      start_price: found.start_price,
     }
     isEditing.value = true
     dialog.value = true
   }
 
-  function remove (id) {
+  async function remove (id: string|number) {
     const index = rawDataItems.value.findIndex(item => item.id === id)
     if (index === -1) {
       snackbar.value = { show: true, text: '记录不存在' }
       return
     }
+    // 先删本地，失败则回滚
     rawDataItems.value.splice(index, 1)
   }
 
-  function save () {
+  async function save () {
     if (!formModel.value.stock) {
       snackbar.value = { show: true, text: '请选择股票/基金' }
       return
     }
 
+    loading.value = true
     // 转换驼峰为下划线格式
     const noticeConfigs = formModel.value.noticeConfigs.map((config, i) => ({
       id: `${i + 1}`,
@@ -386,24 +400,31 @@
       notice_value: config.noticeValue,
     }))
 
-    const submitData = {
+    const submitData: MonitorSubmitData = {
       id: formModel.value.id || `${Date.now()}`,
-      code: formModel.value.stock.code,
-      name: formModel.value.stock.name,
+      code: formModel.value.stock!.code,
+      name: formModel.value.stock!.name,
       notice_configs: noticeConfigs,
       start_date: formModel.value.start_date,
       start_price: formModel.value.start_price,
     }
 
-    const existingIndex = rawDataItems.value.findIndex(item => item.id === formModel.value.id)
-    if (existingIndex !== -1) {
-      // 更新现有记录
-      rawDataItems.value[existingIndex] = submitData
-    } else {
-      // 新增记录
-      rawDataItems.value.push(submitData)
+    // 保存到服务器（先调用API，成功后再更新本地状态）
+    try {
+      await saveMonitorTask(submitData)
+      // API成功后更新本地状态
+      const existingIndex = rawDataItems.value.findIndex(item => item.id === submitData.id)
+      if (existingIndex !== -1) {
+        rawDataItems.value[existingIndex] = submitData
+      } else {
+        rawDataItems.value.push(submitData)
+      }
+      snackbar.value = { show: true, text: '保存成功' }
+    } catch (error) {
+      snackbar.value = { show: true, text: '保存失败' }
+    } finally {
+      loading.value = false
     }
-    post(monitorApi.monitor, submitData)
   }
 
   function reset () {
@@ -427,7 +448,7 @@
   async function getDataItems () {
     loading.value = true
     try {
-      const data = await get(monitorApi.monitor)
+      const data = await getMonitorList()
       if (data.code == 0) {
         rawDataItems.value = data.data.items
       }
@@ -438,7 +459,7 @@
     }
   }
 
-  function getSelectItme () {
+  function getSelectItems () {
     return [
       { code: '000001', name: '平安银行' },
       { code: '000002', name: '万科A' },
@@ -451,12 +472,17 @@
   }
 
   onMounted(() => {
-    selectItems.value = getSelectItme()
+    selectItems.value = getSelectItems()
     reset()
     getDataItems()
+    // 节流刷新，避免频繁请求
     intervalId = setInterval(() => {
-      getDataItems()
-    }, 5000)
+      const now = Date.now()
+      if (now - lastRefreshTime >= refreshInterval) {
+        lastRefreshTime = now
+        getDataItems()
+      }
+    }, 1000) // 每秒检查，但实际刷新间隔由 lastRefreshTime 控制
   })
 
   onUnmounted(() => {

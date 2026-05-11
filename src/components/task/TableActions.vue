@@ -27,7 +27,7 @@
   defineProps({
     id: {
       type: [Number, String],
-      required: true,
+      required: false,
     },
   })
 

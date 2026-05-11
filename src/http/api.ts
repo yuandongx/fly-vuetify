@@ -14,5 +14,6 @@ export const stockApi = {
 
 /** 基金相关API */
 export const fundApi = {
+  list: '/api/fund/list',
   favorite: (code: C, flag: number) => `/api/fund/favorite/${code}/${flag}`,
 }

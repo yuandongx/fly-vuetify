@@ -484,7 +484,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
+  import { getTradeList, addTradeRecord, updateTradeRecord, deleteTradeRecord } from '@/http/task'
 
   // 类型定义
   interface TradeRecord {
@@ -720,24 +721,10 @@
   }
 
   // 保存
-  function handleSave () {
+  async function handleSave () {
     if (!formRef.value.validate()) return
-
-    if (isEditing.value) {
-      const index = dataItems.value.findIndex(item => item.id === formData.id)
-      if (index !== -1) {
-        dataItems.value[index] = { ...dataItems.value[index], ...formData } as TradeRecord
-      }
-      showSnackbar('记录已更新', 'success')
-    } else {
-      const newItem: TradeRecord = {
-        ...formData,
-        id: Date.now().toString(),
-      } as TradeRecord
-      dataItems.value.unshift(newItem)
-      showSnackbar('记录已添加', 'success')
-    }
     dialog.value = false
+    await saveRecord()
   }
 
   // 删除
@@ -746,13 +733,9 @@
     deleteDialog.value = true
   }
 
-  function confirmDelete () {
+  async function confirmDelete () {
     if (deleteItem.value) {
-      const index = dataItems.value.findIndex(item => item.id === deleteItem.value!.id)
-      if (index !== -1) {
-        dataItems.value.splice(index, 1)
-      }
-      showSnackbar('记录已删除', 'error')
+      await removeRecord(deleteItem.value.id)
     }
     deleteDialog.value = false
     deleteItem.value = null
@@ -770,6 +753,58 @@
     snackbar.color = color
     snackbar.show = true
   }
+
+  // ==================== API 接口调用 ====================
+
+  /** 加载交易记录 */
+  async function loadTradeRecords () {
+    loading.value = true
+    try {
+      const res = await getTradeList()
+      if (res.code === 0) {
+        dataItems.value = res.data || []
+      }
+    } catch (error) {
+      console.error('加载交易记录失败:', error)
+      showSnackbar('加载数据失败', 'error')
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /** 保存交易记录 */
+  async function saveRecord () {
+    try {
+      if (isEditing.value) {
+        await updateTradeRecord(formData.id!, formData)
+        showSnackbar('记录已更新', 'success')
+      } else {
+        await addTradeRecord(formData)
+        showSnackbar('记录已添加', 'success')
+      }
+      await loadTradeRecords()
+    } catch (error) {
+      console.error('保存失败:', error)
+      showSnackbar('保存失败', 'error')
+    }
+  }
+
+  /** 删除交易记录 */
+  async function removeRecord (id: string) {
+    try {
+      await deleteTradeRecord(id)
+      showSnackbar('记录已删除', 'error')
+      await loadTradeRecords()
+    } catch (error) {
+      console.error('删除失败:', error)
+      showSnackbar('删除失败', 'error')
+    }
+  }
+
+  // 挂载时加载数据
+  onMounted(() => {
+    loadTradeRecords()
+  })
 </script>
 
 <style scoped>

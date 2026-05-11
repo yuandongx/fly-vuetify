@@ -20,7 +20,7 @@ export async function get (path: string, params?: Params) {
   return data
 }
 
-export async function post (path: string, data?: Record<string, string>) {
+export async function post (path: string, data?: any) {
   let url = path
   const response = await fetch(url, {
     method: 'POST',
