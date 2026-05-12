@@ -24,11 +24,11 @@
             v-model="typeFilter"
             class="filter-select"
             clearable
-            density="comfortable"
+            density="compact"
             hide-details
             :items="typeOptions"
             label="类型"
-            style="min-width: 100px; max-width: 140px"
+            style="min-width: 90px; max-width: 120px"
             variant="solo-filled"
             rounded="lg"
           />
@@ -38,11 +38,11 @@
             v-model="statusFilter"
             class="filter-select"
             clearable
-            density="comfortable"
+            density="compact"
             hide-details
             :items="statusOptions"
             label="状态"
-            style="min-width: 100px; max-width: 140px"
+            style="min-width: 90px; max-width: 120px"
             variant="solo-filled"
             rounded="lg"
           />
@@ -863,6 +863,36 @@
 .filter-select :deep(.v-field__input) {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+/* 下拉菜单紧凑样式 */
+.filter-select :deep(.v-select__selection-text),
+.filter-select :deep(.v-field__input) > span:first-child {
+  font-size: 13px;
+}
+
+.filter-select :deep(.v-list) {
+  padding: 4px 0;
+}
+
+.filter-select :deep(.v-list-item) {
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.filter-select :deep(.v-list-item-title) {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.filter-select :deep(.v-list-item--density-compact) {
+  --v-list-item-padding-top: 4px;
+  --v-list-item-padding-bottom: 4px;
+}
+
+.filter-select :deep(.v-field__clearable),
+.filter-select :deep(.v-field__suffix) {
+  opacity: 0.7;
 }
 
 .note-container {

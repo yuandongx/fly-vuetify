@@ -5,9 +5,9 @@
     </template>
     <v-list class="menu-list" density="compact">
       <v-list-item v-for="item in menuItem.children" :key="item.key" class="menu-item" :to="item.to">
-        <template #prepend>
+        <!-- <template #prepend>
           <v-icon class="mr-2" :icon="getIcon(item.key)" size="small" />
-        </template>
+        </template> -->
         {{ item.label }}
       </v-list-item>
     </v-list>
@@ -48,16 +48,20 @@
 }
 
 .menu-list {
-  border-radius: 12px !important;
+  border-radius: 8px !important;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 4px 0;
+  min-width: 140px;
 }
 
 .menu-item {
   transition: all 0.2s ease;
+  min-height: 38px;
+  font-size: 13px;
 }
 
 .menu-item:hover {
-  background: rgba(102, 126, 234, 0.1) !important;
+  background: rgba(102, 126, 234, 0.12) !important;
 }
 </style>
