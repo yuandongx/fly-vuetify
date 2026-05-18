@@ -102,17 +102,17 @@
           </v-chip>
         </template>
 
-        <!-- 触发方式 -->
+        <!-- 触发方式
         <template #item.trigger="{ item }">
           <v-chip color="grey" size="x-small" variant="outlined">
             {{ formatTrigger(item.trigger) }}
           </v-chip>
-        </template>
+        </template>  -->
 
         <!-- 接口名 -->
-        <template #item.interface_name="{ item }">
+        <!-- <template #item.interface_name="{ item }">
           <code class="interface-code">{{ item.interface_name }}</code>
-        </template>
+        </template> -->
 
         <!-- 运行时间 -->
         <template #item.start_time="{ item }">
@@ -272,9 +272,9 @@
       id: item.id,
       name: item.name,
       desc: item.msg,
-      start_time: item.start_time,
+      start_time: item.last_run_time,
       end_time: item.end_time,
-      next_time: item.next_time,
+      next_time: item.next_run_time,
       duration: item.duration,
       status: item.status,
       error: item.error,
@@ -287,9 +287,8 @@
   }
 
   function get_data () {
-    loading.value = true
-    get(monitorApi.list, parms).then(response => {
-      tasks.value = map_data(response.data.data)
+    get(monitorApi.task, parms).then(response => {
+      tasks.value = map_data(response.data.items)
       tasks_length.value = response.data.total
     }).catch(error => {
       console.error('获取任务数据失败:', error)
@@ -310,6 +309,7 @@
 
   function refreshTask (item: any) {
     console.log('刷新任务:', item)
+    loading.value = true
     get_data()
   }
 
@@ -388,6 +388,7 @@
 
   // 初始化
   onMounted(() => {
+    loading.value = true
     get_data()
     intervalId = setInterval(() => {
       get_data()

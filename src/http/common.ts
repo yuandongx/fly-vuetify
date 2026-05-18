@@ -29,12 +29,14 @@ export async function post (path: string, data?: any) {
     },
     body: JSON.stringify(data),
   })
-  console.log('---->', JSON.stringify(data))
-  console.log('--response-->', response)
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`)
   }
 
   const _data = await response.json()
   return _data
+}
+
+export async function del(params:string) {
+  
 }

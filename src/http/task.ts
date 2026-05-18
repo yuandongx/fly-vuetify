@@ -1,8 +1,23 @@
-import { get, post } from './common'
+import { del, get, post } from './common'
 import { stockApi, monitorApi, fundApi } from './api'
 import type { Params } from '@/types/common'
 
 // ==================== 任务/监控相关接口 ====================
+
+/** 获取监控列表 */
+export async function getTaskist (params?: Params) {
+  return await get(monitorApi.task, params)
+}
+
+/** 创建/更新监控任务 */
+export async function saveTask (data: any) {
+  return await post(monitorApi.task, data)
+}
+
+/** 删除监控任务 */
+export async function deleteTask (id: string) {
+  return await del(`${monitorApi.task}/${id}`)
+}
 
 /** 获取监控列表 */
 export async function getMonitorList (params?: Params) {

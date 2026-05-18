@@ -2,7 +2,7 @@ type C = string | number | undefined
 
 /** 监控任务相关API */
 export const monitorApi = {
-  list: '/api/v1/task',
+  task: '/api/v1/task',
   monitor: '/api/v1/monitor',
 }
 
