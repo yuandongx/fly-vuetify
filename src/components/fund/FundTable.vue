@@ -99,7 +99,7 @@
   const props = defineProps({
     dataSourcePath: {
       type: String,
-      default: '/api/fund/all',
+      default: '/api/fund',
     },
     dataHeaders: {
       type: Array as PropType<TableColumn[]>,
@@ -126,6 +126,48 @@
     loadItems({ page, itemsPerPage: limit, sortBy, groupBy, search: searchVal })
   }
 
+  /** 后端返回中文key -> 前端英文key 映射表 */
+  const FIELD_MAP: Record<string, string> = {
+    '基金代码': 'code',
+    '标准优惠费率': 'biao_zhun_you_hui_fei_lv',
+    '基金简称': 'name',
+    '基金类型': 'fund_type',
+    '更新时间': 'update_time',
+    '成立日期': 'established_time',
+    '最新规模': 'latest_scale',
+    '基金公司': 'fund_company',
+    '数据日期': 'date',
+    '日增长率(%)': 'day_growth_rate',
+    '近1周收益(%)': 'week_growth_rate',
+    '近1月收益(%)': 'month_growth_rate',
+    '近3月收益(%)': 'quarter_growth_rate',
+    '近6月收益(%)': 'half_year_growth_rate',
+    '近1年收益(%)': 'year_growth_rate',
+    '近2年收益(%)': 'two_year_growth_rate',
+    '近3年收益(%)': 'three_year_growth_rate',
+    '今年以来收益(%)': 'this_year_growth_rate',
+    '成立以来年化收益(%)': 'total_growth_rate',
+    '手续费': 'fee',
+    '跟踪指数': 'track_index',
+    '单位净值': 'unit_net_value',
+    '累计净值': 'total_net_value',
+    '基金规模(万元)': 'latest_scale',
+    '综合评分': 'score',
+    '同类排名': 'rank',
+    '是否关注': 'follow',
+  }
+
+  function mapFields (row: Record<string, unknown>): TableRow {
+    const mapped: TableRow = { ...row as TableRow }
+    for (const [cnKey, enKey] of Object.entries(FIELD_MAP)) {
+      if (row[cnKey] !== undefined) {
+        mapped[enKey] = row[cnKey] as string | number
+      }
+    }
+    // 保留原始字段，确保同时存在中文和英文 key
+    return mapped
+  }
+
   function loadItems (options?: options, loadingShow?: boolean) {
     loading.value = loadingShow !== undefined && loadingShow ? true : false
     queryOptions = {
@@ -142,13 +184,15 @@
     get(props.dataSourcePath, queryParams)
       .then(res => {
         loading.value = false
-        serverItemsLength.value = res.total
-        items.value = res.data || []
+        serverItemsLength.value = res.total || 0
+        const rawData = res.items || []
+        items.value = rawData.map((row: Record<string, unknown>) => mapFields(row))
       })
       .catch(() => {
         loading.value = false
       })
   }
+
 
   function handleMore (item: TableRow) {
     showDialog.value = true

@@ -8,12 +8,12 @@ export const monitorApi = {
 
 /** 股票相关API */
 export const stockApi = {
-  list: '/api/stock/list',
+  list: '/api/stock',
   follow: (code: C, flag: number) => `/api/stock/follow/${code}/${flag}`,
 }
 
 /** 基金相关API */
 export const fundApi = {
-  list: '/api/fund/list',
+  list: '/api/fund',
   favorite: (code: C, flag: number) => `/api/fund/favorite/${code}/${flag}`,
 }

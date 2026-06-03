@@ -7,7 +7,6 @@
       v-model:items-per-page="itemsPerPage"
       class="stock-table elevation-0"
       :headers="tableHeaders"
-      item-value="name"
       :items="rows"
       :items-length="totalItems"
       :loading="loading"
@@ -136,7 +135,7 @@
     loading.value = true
     try {
       const res = await get(props.dataSourcePath, params.value)
-      rows.value = res.data || []
+      rows.value = res.items || []
       totalItems.value = res.total || 0
     } catch (error) {
       console.error('加载数据失败:', error)

@@ -1,36 +1,61 @@
 <template>
   <tr class="stock-row" :class="{ 'is-favorite': isFavorite }">
-    <td class="text-left font-weight-medium">
-      <div class="d-flex align-center ga-2">
-        <v-chip
-          class="rank-chip"
-          :color="getChangeColor(item.change)"
-          size="x-small"
-          variant="tonal"
-        >
-          {{ getChangeLabel(item.change) }}
-        </v-chip>
-        <span class="stock-name">{{ item.name }}</span>
-      </div>
+    <td
+      v-for="header in headers"
+      :key="header.key"
+      :class="getCellClass(header)"
+    >
+      <template v-if="header.key === 'name'">
+        <div class="d-flex align-center ga-2">
+          <v-chip
+            class="rank-chip"
+            :color="getChangeColor(item.pricechange)"
+            size="x-small"
+            variant="tonal"
+          >
+            {{ getChangeLabel(item.pricechange) }}
+          </v-chip>
+          <span class="stock-name">{{ item.name }}</span>
+        </div>
+      </template>
+      <template v-else-if="header.key === 'trade'">
+        <span class="price-value">{{ formatPrice(item.trade) }}</span>
+      </template>
+      <template v-else-if="header.key === 'pricechange'">
+        <span :class="getChangeColorClass(item.pricechange)">
+          <v-icon
+            v-if="header.arrow"
+            class="mr-1"
+            :icon="getChangeIcon(item.pricechange)"
+            size="x-small"
+          />
+          {{ formatChange(item.pricechange) }}
+        </span>
+      </template>
+      <template v-else-if="header.key === 'changepercent'">
+        <span :class="getChangeColorClass(item.changepercent)">
+          <v-icon
+            v-if="header.arrow"
+            class="mr-1"
+            :icon="getChangeIcon(item.changepercent)"
+            size="x-small"
+          />
+          {{ formatPercent(item.changepercent) }}
+        </span>
+      </template>
+      <template v-else-if="header.key === 'volume'">
+        <span class="text-grey">{{ formatVolume(item.volume) }}</span>
+      </template>
+      <template v-else-if="header.key === 'amount'">
+        <span class="text-grey">{{ formatAmount(item.amount) }}</span>
+      </template>
+      <template v-else-if="header.key === 'turnoverratio'">
+        <span>{{ formatPercent(item.turnoverratio) }}</span>
+      </template>
+      <template v-else>
+        <span>{{ item[header.key] ?? '-' }}</span>
+      </template>
     </td>
-    <td class="text-center text-grey">{{ item.code }}</td>
-    <td class="text-right">
-      <span class="price-value">{{ formatPrice(item.price) }}</span>
-    </td>
-    <td class="text-right" :class="getChangeColorClass(item.change)">
-      <v-icon
-        class="mr-1"
-        :icon="getChangeIcon(item.change)"
-        size="x-small"
-      />
-      {{ formatChange(item.change) }}
-    </td>
-    <td class="text-right">
-      <span :class="getChangeColorClass(item.changePercent)">
-        {{ formatPercent(item.changePercent) }}
-      </span>
-    </td>
-    <td class="text-right text-grey">{{ formatVolume(item.volume) }}</td>
     <td class="text-right">
       <div class="d-flex ga-1 justify-end">
         <v-btn
@@ -150,6 +175,33 @@
     if (num >= 100_000_000) return `${(num / 100_000_000).toFixed(2)}亿`
     if (num >= 10_000) return `${(num / 10_000).toFixed(2)}万`
     return num.toFixed(0)
+  }
+
+  function formatAmount (amount: string | number | undefined | null) {
+    const num = parseValue(amount)
+    if (num === null) return '-'
+    if (num >= 100_000_000) return `${(num / 100_000_000).toFixed(2)}亿`
+    if (num >= 10_000) return `${(num / 10_000).toFixed(2)}万`
+    return num.toFixed(2)
+  }
+
+  function getCellClass (header: TableColumn) {
+    const base: Record<string, string> = {
+      symbol: 'text-center text-grey',
+      name: 'text-left font-weight-medium',
+      trade: 'text-right',
+      pricechange: 'text-right',
+      changepercent: 'text-right',
+      high: 'text-right',
+      low: 'text-right',
+      open: 'text-right',
+      settlement: 'text-right',
+      volume: 'text-right text-grey',
+      amount: 'text-right text-grey',
+      turnoverratio: 'text-right',
+      ticktime: 'text-right text-grey',
+    }
+    return base[header.key] || 'text-right'
   }
 
   function onFavorite () {

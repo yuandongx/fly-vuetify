@@ -1,41 +1,43 @@
 <template>
   <tr class="fund-row" :class="{ 'is-favorite': isFavorite }">
-    <td class="text-left font-weight-medium">
-      <div class="d-flex align-center ga-2">
-        <v-icon class="fund-icon" color="primary" icon="mdi-piggybank-outline" size="small" />
-        <div class="d-flex flex-column">
-          <span class="fund-name">{{ item.name }}</span>
-          <span class="text-caption text-grey">{{ item.code }}</span>
+    <td
+      v-for="header in headers"
+      :key="header.key"
+      :class="getCellClass(header)"
+    >
+      <template v-if="header.key === 'name'">
+        <div class="d-flex align-center ga-2">
+          <v-icon class="fund-icon" color="primary" icon="mdi-piggybank-outline" size="small" />
+          <div class="d-flex flex-column">
+            <span class="fund-name">{{ item.name }}</span>
+            <span class="text-caption text-grey">{{ item.code }}</span>
+          </div>
         </div>
-      </div>
-    </td>
-    <td class="text-right">
-      <span class="value-label">最新净值</span>
-      <span class="value-value">¥{{ formatValue(item.netValue) }}</span>
-    </td>
-    <td class="text-right">
-      <span class="value-label">累计净值</span>
-      <span class="value-value">{{ formatValue(item.totalNetValue) }}</span>
-    </td>
-    <td class="text-right" :class="getChangeColorClass(item.dayGrowth)">
-      <v-icon
-        class="mr-1"
-        :icon="getChangeIcon(item.dayGrowth)"
-        size="x-small"
-      />
-      {{ formatPercent(item.dayGrowth) }}
-    </td>
-    <td class="text-right">
-      <span class="value-label">近1月</span>
-      <span :class="getChangeColorClass(item.month1)">{{ formatPercent(item.month1) }}</span>
-    </td>
-    <td class="text-right">
-      <span class="value-label">近3月</span>
-      <span :class="getChangeColorClass(item.month3)">{{ formatPercent(item.month3) }}</span>
-    </td>
-    <td class="text-right">
-      <span class="value-label">近1年</span>
-      <span :class="getChangeColorClass(item.year1)">{{ formatPercent(item.year1) }}</span>
+      </template>
+      <template v-else-if="header.key === 'unit_net_value' || header.key === 'total_net_value'">
+        <span class="value-label">{{ header.key === 'unit_net_value' ? '最新净值' : '累计净值' }}</span>
+        <span class="value-value">{{ header.key === 'unit_net_value' ? '¥' : '' }}{{ formatValue(item[header.key]) }}</span>
+      </template>
+      <template v-else-if="isGrowthRateField(header.key)">
+        <span :class="getChangeColorClass(item[header.key])">
+          <v-icon
+            v-if="header.key === 'day_growth_rate'"
+            class="mr-1"
+            :icon="getChangeIcon(item[header.key])"
+            size="x-small"
+          />
+          {{ formatPercent(item[header.key]) }}
+        </span>
+      </template>
+      <template v-else-if="header.key === 'fee'">
+        <span>{{ formatPercent(item[header.key]) }}</span>
+      </template>
+      <template v-else-if="header.key === 'latest_scale'">
+        <span class="text-grey">{{ formatScale(item[header.key]) }}</span>
+      </template>
+      <template v-else>
+        <span>{{ item[header.key] ?? '-' }}</span>
+      </template>
     </td>
     <td class="text-right">
       <div class="d-flex ga-1 justify-end">
@@ -95,6 +97,24 @@
     return props.item.follow === 1 || props.item.follow === '1'
   })
 
+  /** 需要按百分比+颜色渲染的增长率字段 */
+  const GROWTH_RATE_KEYS = new Set([
+    'day_growth_rate',
+    'week_growth_rate',
+    'month_growth_rate',
+    'quarter_growth_rate',
+    'half_year_growth_rate',
+    'year_growth_rate',
+    'two_year_growth_rate',
+    'three_year_growth_rate',
+    'this_year_growth_rate',
+    'total_growth_rate',
+  ])
+
+  function isGrowthRateField (key: string): boolean {
+    return GROWTH_RATE_KEYS.has(key)
+  }
+
   function parseValue (value: string | number | undefined | null): number | null {
     if (value === null || value === undefined || value === '') return null
     const num = typeof value === 'string' ? Number.parseFloat(value) : value
@@ -130,6 +150,42 @@
     if (isNaN(num)) return '-'
     const sign = num >= 0 ? '+' : ''
     return `${sign}${num.toFixed(2)}%`
+  }
+
+  function formatScale (value: string | number | undefined | null) {
+    const num = parseValue(value)
+    if (num === null) return '-'
+    if (num >= 10_000) return `${(num / 10_000).toFixed(2)}亿`
+    if (num >= 1) return `${num.toFixed(2)}万`
+    return num.toFixed(2)
+  }
+
+  function getCellClass (header: TableColumn) {
+    const base: Record<string, string> = {
+      code: 'text-center text-grey',
+      name: 'text-left font-weight-medium',
+      fund_type: 'text-center',
+      date: 'text-center text-grey',
+      day_growth_rate: 'text-right',
+      week_growth_rate: 'text-right',
+      month_growth_rate: 'text-right',
+      quarter_growth_rate: 'text-right',
+      half_year_growth_rate: 'text-right',
+      year_growth_rate: 'text-right',
+      two_year_growth_rate: 'text-right',
+      three_year_growth_rate: 'text-right',
+      this_year_growth_rate: 'text-right',
+      total_growth_rate: 'text-right',
+      unit_net_value: 'text-right',
+      total_net_value: 'text-right',
+      fee: 'text-right',
+      latest_scale: 'text-right',
+      track_index: 'text-center',
+      update_time: 'text-center text-grey',
+      established_time: 'text-center text-grey',
+      fund_company: 'text-left',
+    }
+    return base[header.key] || 'text-right'
   }
 
   function onFavorite () {
