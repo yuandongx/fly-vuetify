@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: /home/develop/workspace/fly-vuetify
+    image: web
+    ports:
+      - "80:80"
+    volumes:
+      - /home/develop/workspace/fly-vuetify:/app
+
+networks:
+  app-network:
+    external:
+      name: app_network
