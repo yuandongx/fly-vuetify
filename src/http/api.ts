@@ -2,8 +2,8 @@ type C = string | number | undefined
 
 /** 监控任务相关API */
 export const monitorApi = {
-  task: '/api/v1/task',
-  monitor: '/api/v1/monitor',
+  task: '/api/task',
+  monitor: '/api/monitor',
 }
 
 /** 股票相关API */

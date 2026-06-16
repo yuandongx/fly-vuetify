@@ -2,7 +2,7 @@
   <div class="fund-page">
     <v-sheet border class="fund-container">
       <!-- 基金表格 -->
-      <fund-table :data-headers="fundAllHeader" data-source-path="/api/fund/all" />
+      <fund-table :data-headers="fundAllHeader" data-source-path="/api/fund" />
     </v-sheet>
   </div>
 </template>

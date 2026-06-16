@@ -38,10 +38,10 @@ export async function deleteMonitorTask (id: string) {
 
 /** 交易记录API */
 export const tradeApi = {
-  list: '/api/v1/trade/list',
-  add: '/api/v1/trade/add',
-  update: '/api/v1/trade/update',
-  delete: '/api/v1/trade/delete',
+  list: '/api/trade/list',
+  add: '/api/trade/add',
+  update: '/api/trade/update',
+  delete: '/api/trade/delete',
 }
 
 /** 获取交易记录列表 */
