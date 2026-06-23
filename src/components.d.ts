@@ -19,7 +19,6 @@ declare module 'vue' {
     FundSearchBar: typeof import('./components/fund/FundSearchBar.vue')['default']
     FundTable: typeof import('./components/fund/FundTable.vue')['default']
     MarketIndices: typeof import('./components/index/MarketIndices.vue')['default']
-    Monitor: typeof import('./components/task/TaskMonitor.vue')['default']
     MoreInfo: typeof import('./components/moreInfo/MoreInfo.vue')['default']
     NameCell: typeof import('./components/task/NameCell.vue')['default']
     NoticeConfigList: typeof import('./components/task/NoticeConfigList.vue')['default']

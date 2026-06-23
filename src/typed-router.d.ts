@@ -21,7 +21,7 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/follow/fund': RouteRecordInfo<'/follow/fund', '/follow/fund', Record<never, never>, Record<never, never>>,
     '/follow/stock': RouteRecordInfo<'/follow/stock', '/follow/stock', Record<never, never>, Record<never, never>>,
-    '/fund/all': RouteRecordInfo<'/fund/all', '/fund/all', Record<never, never>, Record<never, never>>,
+    '/fund/': RouteRecordInfo<'/fund/', '/fund', Record<never, never>, Record<never, never>>,
     '/fund/foreign': RouteRecordInfo<'/fund/foreign', '/fund/foreign', Record<never, never>, Record<never, never>>,
     '/fund/internal': RouteRecordInfo<'/fund/internal', '/fund/internal', Record<never, never>, Record<never, never>>,
     '/fund/rank': RouteRecordInfo<'/fund/rank', '/fund/rank', Record<never, never>, Record<never, never>>,
@@ -55,8 +55,8 @@ declare module 'vue-router/auto-routes' {
       routes: '/follow/stock'
       views: never
     }
-    'src/pages/fund/all.vue': {
-      routes: '/fund/all'
+    'src/pages/fund/index.vue': {
+      routes: '/fund/'
       views: never
     }
     'src/pages/fund/foreign.vue': {

@@ -9,4 +9,8 @@ export interface TableColumn {
   color?: boolean
   isPercent?: boolean
   arrow?: boolean
+  sortable?: false, 
+  align?: "start" | "end" | "center" | undefined,
+  width?: string | number | undefined;
+  maxWidth?: string | number | undefined;
 }

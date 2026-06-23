@@ -37,6 +37,53 @@ export async function post (path: string, data?: any) {
   return _data
 }
 
-export async function del(params:string) {
-  
+
+export async function put(path: string, data?: any) {
+  let url = path
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
+
+  const _data = await response.json()
+  return _data
+}
+
+export async function patch(path: string, data?: any) {
+  let url = path
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
+
+  const _data = await response.json()
+  return _data
+}
+
+export async function del(path: string) {
+  let url = path
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
+
+  const _data = await response.json()
+  return _data
 }

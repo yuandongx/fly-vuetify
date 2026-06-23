@@ -35,10 +35,10 @@
           />
         </div>
         <div class="header-stats">
-          <v-chip color="primary" size="small" variant="tonal">
-            <v-icon icon="mdi-refresh" size="x-small" start />
-            实时更新
-          </v-chip>
+          <v-btn color="primary" variant="tonal" @click="add">
+              <v-icon icon="mdi-plus" start />
+              新增任务
+            </v-btn>
         </div>
       </div>
     </div>
@@ -150,7 +150,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="config in item.notice_configs" :key="config.key || config.id">
+                    <tr v-for="config in item.notice_configs" :key="config.id">
                       <td>
                         <v-chip :color="getNoticeTypeColor(config.notice_type)" size="x-small" variant="tonal">
                           {{ getNoticeTypeLabel(config.notice_type) }}
@@ -196,7 +196,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue'
-  import { getMonitorList, saveMonitorTask } from '@/http/task'
+  import { getMonitorList, saveMonitorTask, deleteMonitorTask } from '@/http/task'
   import type { MonitorSubmitData, MonitorRecord } from '@/types/task'
 
   /**
@@ -287,7 +287,7 @@
     searchValue.value = ''
   }
 
-  const headers: Array<{title: string, key: string, align?: "start"|"end", width: string, "sortable"?: boolean}>= [
+  const headers: Array<{title: string, key: string, align?: 'start'|'end', width: string, sortable?: boolean}> = [
     { title: '代码', key: 'code', align: 'start', width: '100px' },
     { title: '名称', key: 'name', width: '120px' },
     { title: '现价', key: 'price', width: '100px' },
@@ -383,8 +383,18 @@
       snackbar.value = { show: true, text: '记录不存在' }
       return
     }
-    // 先删本地，失败则回滚
+    // 先保存被删元素用于回滚，再删本地
+    const removedItem = rawDataItems.value[index]!
     rawDataItems.value.splice(index, 1)
+    // 调用API删除
+    try {
+      await deleteMonitorTask(String(id))
+      snackbar.value = { show: true, text: '删除成功' }
+    } catch (error) {
+      // 回滚
+      rawDataItems.value.splice(index, 0, removedItem)
+      snackbar.value = { show: true, text: '删除失败' }
+    }
   }
 
   async function save () {
@@ -448,11 +458,12 @@
   }
 
   async function getDataItems () {
-    loading.value = true
+    // loading.value = true
     try {
       const data = await getMonitorList()
-      if (data.code == 0) {
-        rawDataItems.value = data.data.items
+      // console.log("=====>", data.items)
+      if (data.total>0) {
+        rawDataItems.value = data.items
       }
     } catch (error) {
       console.error('获取数据失败:', error)
@@ -476,6 +487,7 @@
   onMounted(() => {
     selectItems.value = getSelectItems()
     reset()
+    loading.value = true
     getDataItems()
     // 节流刷新，避免频繁请求
     intervalId = setInterval(() => {

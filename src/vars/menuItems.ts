@@ -20,18 +20,6 @@ export const menuItems: MenuItem[] = [
     label: '基金',
     to: '/fund',
     key: 'fund',
-    children: [
-      {
-        label: '全部基金',
-        to: '/fund/all',
-        key: 'fund-all',
-      },
-      {
-        label: '基金排行',
-        to: '/fund/rank',
-        key: 'fund-rank',
-      },
-    ],
   },
   {
     label: '关注',
