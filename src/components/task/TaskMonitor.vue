@@ -196,7 +196,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue'
-  import { getMonitorList, saveMonitorTask, deleteMonitorTask } from '@/http/task'
+  import { getMonitorList, updateMonitorTask, deleteMonitorTask } from '@/http/task'
   import type { MonitorSubmitData, MonitorRecord } from '@/types/task'
 
   /**
@@ -423,7 +423,7 @@
 
     // 保存到服务器（先调用API，成功后再更新本地状态）
     try {
-      await saveMonitorTask(submitData)
+      await updateMonitorTask(formModel.value.id, submitData)
       // API成功后更新本地状态
       const existingIndex = rawDataItems.value.findIndex(item => item.id === submitData.id)
       if (existingIndex !== -1) {

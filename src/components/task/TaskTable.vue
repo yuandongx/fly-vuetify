@@ -213,7 +213,7 @@
   import type { Params } from '@/types/common'
   import type { Task, TaskHistory } from '@/types/task'
   import { watch } from 'vue'
-  import { monitorApi } from '@/http/api'
+  import { taskApi } from '@/http/api'
   import { get } from '@/http/common'
   import { columns } from '@/vars/task'
 
@@ -287,9 +287,10 @@
   }
 
   function get_data () {
-    get(monitorApi.task, parms).then(response => {
-      tasks.value = map_data(response.data.items)
-      tasks_length.value = response.data.total
+    get(taskApi.task(), parms).then(response => {
+      console.log('获取任务数据成功:', response)
+      tasks.value = map_data(response.items)
+      tasks_length.value = response.total
     }).catch(error => {
       console.error('获取任务数据失败:', error)
     }).finally(() => {

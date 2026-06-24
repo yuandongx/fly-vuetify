@@ -5,8 +5,8 @@ import type { Params } from '@/types/common'
 // ==================== 任务/监控相关接口 ====================
 
 /** 获取监控列表 */
-export async function getTaskList (params?: Params) {
-  return await get(taskApi.task(), params)
+export async function getTaskList (id?: string, params?: Params) {
+  return await get(taskApi.task(id), params)
 }
 
 /** 创建/更新监控任务 */
@@ -24,8 +24,8 @@ export async function deleteTask (id: string) {
 }
 
 /** 获取监控列表 */
-export async function getMonitorList (params?: Params) {
-  return await get(taskApi.monitor(), params)
+export async function getMonitorList (id?: string, params?: Params) {
+  return await get(taskApi.monitor(id), params)
 }
 
 /** 创建/更新监控任务 */
@@ -36,4 +36,9 @@ export async function saveMonitorTask (data: any) {
 /** 删除监控任务 */
 export async function deleteMonitorTask (id: string) {
   return await del(taskApi.monitor(id))
+}
+
+/** 更新监控任务 */
+export async function updateMonitorTask (id: string, data: any) {
+  return await put(taskApi.monitor(id), data)
 }
