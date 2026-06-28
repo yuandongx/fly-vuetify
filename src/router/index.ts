@@ -14,6 +14,17 @@ const router = createRouter({
   routes: setupLayouts(routes),
 })
 
+/** 路由守卫：未登录时跳转到登录页 */
+router.beforeEach((to, _from) => {
+  const token = sessionStorage.getItem('auth_token')
+  if (!token && to.path !== '/login') {
+    return '/login'
+  }
+  if (token && to.path === '/login') {
+    return '/'
+  }
+})
+
 // Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {
   if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {

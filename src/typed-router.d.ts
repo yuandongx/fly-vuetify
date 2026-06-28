@@ -26,6 +26,7 @@ declare module 'vue-router/auto-routes' {
     '/fund/internal': RouteRecordInfo<'/fund/internal', '/fund/internal', Record<never, never>, Record<never, never>>,
     '/fund/rank': RouteRecordInfo<'/fund/rank', '/fund/rank', Record<never, never>, Record<never, never>>,
     '/history': RouteRecordInfo<'/history', '/history', Record<never, never>, Record<never, never>>,
+    '/login': RouteRecordInfo<'/login', '/login', Record<never, never>, Record<never, never>>,
     '/note': RouteRecordInfo<'/note', '/note', Record<never, never>, Record<never, never>>,
     '/stock': RouteRecordInfo<'/stock', '/stock', Record<never, never>, Record<never, never>>,
     '/task/monitor': RouteRecordInfo<'/task/monitor', '/task/monitor', Record<never, never>, Record<never, never>>,
@@ -73,6 +74,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/history.vue': {
       routes: '/history'
+      views: never
+    }
+    'src/pages/login.vue': {
+      routes: '/login'
       views: never
     }
     'src/pages/note.vue': {

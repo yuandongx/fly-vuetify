@@ -74,8 +74,7 @@
 
 <script setup lang="ts">
   import type { StockRow } from '@/types/stock'
-  import { stockApi } from '@/http/api'
-  import { get } from '@/http/common'
+  import { getStockList } from '@/http/stock'
   import { stockColumns } from '@/vars/stock'
 
   const loading = ref(true)
@@ -105,7 +104,7 @@
   const props = defineProps({
     dataSourcePath: {
       type: String,
-      default: stockApi.list,
+      default: "",
     },
   })
 
@@ -134,7 +133,7 @@
     }
     loading.value = true
     try {
-      const res = await get(props.dataSourcePath, params.value)
+      const res = await getStockList(params.value)
       rows.value = res.items || []
       totalItems.value = res.total || 0
     } catch (error) {

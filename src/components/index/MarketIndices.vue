@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
+  import { getIndicesList } from '@/http/indices'
 
   interface MarketIndex {
     code: string
@@ -44,16 +45,16 @@
   }
 
   const marketIndices = ref<MarketIndex[]>([
-    { code: '000001', name: '上证指数', price: 3285.67, change: 45.23, changePercent: 1.4 },
-    { code: '399001', name: '深证成指', price: 10_855.32, change: 123.45, changePercent: 1.15 },
-    { code: '399006', name: '创业板指', price: 2156.78, change: -18.32, changePercent: -0.84 },
-    { code: '000688', name: '科创50', price: 1024.56, change: 8.76, changePercent: 0.86 },
-    { code: 'HSI', name: '恒生指数', price: 18_520, change: -125.3, changePercent: -0.67 },
-    { code: 'DJI', name: '道琼斯', price: 38_654.42, change: 245.18, changePercent: 0.64 },
-    { code: 'IXIC', name: '纳斯达克', price: 15_628.95, change: -85.32, changePercent: -0.54 },
-    { code: 'SPX', name: '标普500', price: 5021.84, change: 18.45, changePercent: 0.37 },
-    { code: 'N225', name: '日经225', price: 38_923.56, change: 312.78, changePercent: 0.81 },
-    { code: 'FTSE', name: '富时100', price: 7654.32, change: -45.67, changePercent: -0.59 },
+    // { code: '000001', name: '上证指数', price: 3285.67, change: 45.23, changePercent: 1.4 },
+    // { code: '399001', name: '深证成指', price: 10_855.32, change: 123.45, changePercent: 1.15 },
+    // { code: '399006', name: '创业板指', price: 2156.78, change: -18.32, changePercent: -0.84 },
+    // { code: '000688', name: '科创50', price: 1024.56, change: 8.76, changePercent: 0.86 },
+    // { code: 'HSI', name: '恒生指数', price: 18_520, change: -125.3, changePercent: -0.67 },
+    // { code: 'DJI', name: '道琼斯', price: 38_654.42, change: 245.18, changePercent: 0.64 },
+    // { code: 'IXIC', name: '纳斯达克', price: 15_628.95, change: -85.32, changePercent: -0.54 },
+    // { code: 'SPX', name: '标普500', price: 5021.84, change: 18.45, changePercent: 0.37 },
+    // { code: 'N225', name: '日经225', price: 38_923.56, change: 312.78, changePercent: 0.81 },
+    // { code: 'FTSE', name: '富时100', price: 7654.32, change: -45.67, changePercent: -0.59 },
   ])
 
   function getColor (change: number): string {
@@ -66,12 +67,22 @@
   }
 
   function updateIndices () {
-    marketIndices.value = marketIndices.value.map(index => ({
-      ...index,
-      changePercent: index.changePercent + (Math.random() - 0.5) * 0.1,
-      change: index.change + (Math.random() - 0.5) * 2,
-      price: index.price + (Math.random() - 0.5) * 5,
-    }))
+    getIndicesList().then((response: any) => {
+      console.log('Market Indices Response:', response)
+      console.log('Market Indices total:', response.total)
+      if (response.total > 0) {
+        marketIndices.value = response.items.map((item: any) => ({
+          code: item.code,
+          name: item.name,
+          price: Number(item.price),
+          change: Number(item.change),
+          changePercent: Number(item.change_pct),
+        }))
+      }
+    }).catch((error: any) => {
+      console.error('Error fetching market indices:', error)
+    })
+    
   }
 
   onMounted(() => {

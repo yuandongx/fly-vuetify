@@ -1,5 +1,10 @@
 type C = string | number | undefined
 
+/** 认证相关API */
+export const authApi = {
+  login: () => '/api/auth/login',
+}
+
 /** 监控任务相关API */
 export const taskApi = {
   task: (id?: string) => id===undefined ? '/api/task' : `/api/task/${id}`,
@@ -12,9 +17,7 @@ monitor: (id?: string) => id===undefined ? '/api/monitor' : `/api/monitor/${id}`
 }
 /** 股票相关API */
 export const stockApi = {
-  fund: (id?: string) => id===undefined ? '/api/stock' : `/api/stock/${id}`,
-  detail: (code: string) => `/api/stock/detail/${code}`,
-  follow: (code: C, flag: number) => `/api/stock/follow/${code}/${flag}`,
+  stock: (id?: string) => id===undefined ? '/api/stock' : `/api/stock/${id}`,
 }
 
 /** 基金相关API */
@@ -27,4 +30,9 @@ export const fundApi = {
 export const monitorApi = {
   fund: (id?: string) => id===undefined ? '/api/monitor' : `/api/monitor/${id}`,
   favorite: (code: C, flag: number) => `/api/monitor/favorite/${code}/${flag}`,
+}
+
+/** 其他相关API */
+export const indicesApi = {
+  indices: (id?: string) => id===undefined ? '/api/zs' : `/api/zs/${id}`,
 }
